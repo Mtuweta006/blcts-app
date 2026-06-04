@@ -65,6 +65,11 @@ func main() {
 	// Public Metrics / Visualization route (safe read-only display logs used by Chart.js graphs)
 	r.Get("/api/dashboard/{building_id}", deps.HandleGetDashboard)
 
+	// ==========================================
+	// NEW: Trigger Safaricom STK Push
+	// ==========================================
+	r.Post("/api/maintenance/{task_id}/stk", deps.HandleInitiateSTKPush)
+
 	// Secured API Endpoint Router Groups protected by cryptographic JSON Web Token verified handles
 	// THE FIX IS HERE: Changed 'secured r.RouteReceiver' to 'secured chi.Router'
 	r.Group(func(secured chi.Router) {
