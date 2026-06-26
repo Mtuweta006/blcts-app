@@ -82,5 +82,26 @@
     "code": "WES-003",
     "clientName": "Westlands Suites LLC",
     "estimatedFloorArea": 8000
+  },
+  {
+    "name": "Test Building",
+    "location": "Nairobi",
+    "type": "Commercial",
+    "capexBudget": 50000000,
+    "opexBudget": 5000000
+  },
+  {
+    "name": "Test",
+    "location": "Nairobi",
+    "type": "Commercial",
+    "capexBudget": 50000000,
+    "opexBudget": 5000000
+  },
+  {
+    "name": "Test",
+    "location": "Nairobi",
+    "type": "Commercial",
+    "capexBudget": 50000000,
+    "opexBudget": 5000000
   }
 ]
