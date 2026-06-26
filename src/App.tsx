@@ -33,7 +33,7 @@ import AuthScreen from "./components/AuthScreen";
 import LandingPage from "./components/LandingPage";
 import PropertyManagement from "./components/PropertyManagement";
 import CostEstimation from "./components/CostEstimation";
-import Reports from "./components/Reports";
+import Reports from "./components/Report"; // <-- FIXED: Changed from "./components/Reports" to match your singular file name "Report.tsx"
 import { ActiveTabType } from "./types";
 
 
@@ -519,7 +519,7 @@ export default function App() {
               {/* Connected Dynamic Profile Info */}
               <div className="flex items-center gap-3 pl-3 border-l border-slate-100 dark:border-slate-800">
                 <div className="text-right hidden sm:block">
-                  <span className="text-slate-950 dark:text-slate-100 text-xs font-bold block leading-none">
+                  <span className="text-slate-955 dark:text-slate-100 text-xs font-bold block leading-none">
                     {currentUser?.name || "Abdulwahab Wandera"}
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 text-[9px] block uppercase font-mono font-bold tracking-wider mt-1">
