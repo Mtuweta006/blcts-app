@@ -521,9 +521,9 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                       onClick={() => handleQuickLogin("admin")}
                       className="border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-xl text-left transition-all hover:bg-white dark:hover:bg-slate-900 group cursor-pointer"
                     >
-                      <div className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Abdulwahab Wandera</div>
-                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-emerald-400 mt-0.5">Admin Executive</div>
-                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">wanderaabdulwahab4@...</div>
+                      <div className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Admin Executive</div>
+                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-emerald-400 mt-0.5">System Administrator</div>
+                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">admin@blcts.io</div>
                     </button>
 
                     <button

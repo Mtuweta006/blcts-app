@@ -526,10 +526,10 @@ export default function App() {
               <div className="flex items-center gap-3 pl-3 border-l border-slate-100 dark:border-slate-800">
                 <div className="text-right hidden sm:block">
                   <span className="text-slate-955 dark:text-slate-100 text-xs font-bold block leading-none">
-                    {currentUser?.name || "Abdulwahab Wandera"}
+                    {currentUser?.name || "Administrator"}
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 text-[9px] block uppercase font-mono font-bold tracking-wider mt-1">
-                    {currentUser?.role || "SaaS Admin Account"}
+                    {currentUser?.role || "System Administrator"}
                   </span>
                 </div>
                 <div className="w-9 h-9 rounded-xl bg-slate-950 dark:bg-slate-850 text-slate-100 font-extrabold text-xs flex items-center justify-center border border-slate-800 dark:border-slate-700 shadow-sm select-none">

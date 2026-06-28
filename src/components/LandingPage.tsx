@@ -310,16 +310,16 @@ export default function LandingPage({
               </span>
             </div>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 font-light">
-              AI-powered building lifecycle cost management for the construction industry.
+              Enterprise building lifecycle cost management for the construction industry.
             </p>
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-1.5">
             <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-              Abdulwahab Wandera
+              BLCTS Support Team
             </span>
             <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-              wanderaabdulwahab4@gmail.com • © 2026 BLCTS
+              support@blcts.io • © 2026 BLCTS
             </span>
           </div>
 
