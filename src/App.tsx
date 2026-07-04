@@ -18,14 +18,19 @@ import {
   initialPredictions,
   initialAnomalies,
   initialNotifications,
+  initialSystemSettings,
   getFinancialTrends,
   getAIInsights
 } from "./data";
-import { Property, CostEntry, MaintenanceTask, LifecyclePhase, User, Vendor, Material, Asset, MaintenanceRecord, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification } from "./types";
+import { Property, CostEntry, MaintenanceTask, LifecyclePhase, User, Vendor, Material, Asset, MaintenanceRecord, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification, SystemSettings, AuditLog, isAdminRole, isFacilityManagerRole } from "./types";
 
 // Import modular sub-components for "Professional Polish" theme and chunked optimization
 import Sidebar from "./components/Sidebar";
 import ExecutiveDashboard from "./components/ExecutiveDashboard";
+import AdminDashboard from "./components/AdminDashboard";
+import FacilityDashboard from "./components/FacilityDashboard";
+import SystemSettingsPanel from "./components/SystemSettings";
+import UserManagement from "./components/UserManagement";
 import VendorCenter from "./components/VendorCenter";
 import AddCostModal from "./components/AddCostModal";
 import AuthScreen from "./components/AuthScreen";
@@ -40,6 +45,7 @@ import Sustainability from "./components/Sustainability";
 import Compliance from "./components/Compliance";
 import Notifications from "./components/Notifications";
 import { ActiveTabType } from "./types";
+import { getSafetyMarginFromStorage, setSafetyMarginToStorage } from "./utils/pricingEngine";
 
 
 
@@ -100,9 +106,61 @@ export default function App() {
   const [predictions] = useState<AIPrediction[]>(initialPredictions);
   const [anomalies] = useState<Anomaly[]>(initialAnomalies);
   const [notifications] = useState<AppNotification[]>(initialNotifications);
+
+  // System Settings state (persisted in local storage)
+  const [systemSettings, setSystemSettings] = useState<SystemSettings>(() => {
+    try {
+      const stored = localStorage.getItem("blcts-system-settings");
+      if (stored) return { ...initialSystemSettings, ...JSON.parse(stored) };
+    } catch (e) {}
+    return initialSystemSettings;
+  });
+
+  const updateSystemSettings = (updates: Partial<SystemSettings>) => {
+    setSystemSettings(prev => {
+      const next = { ...prev, ...updates };
+      try {
+        localStorage.setItem("blcts-system-settings", JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+  };
+
+  const handleSafetyMarginChange = (margin: number) => {
+    setSafetyMarginToStorage(margin);
+    updateSystemSettings({ safetyMargin: margin });
+    triggerToast(`Safety margin updated to KSh ${margin}`, "success");
+  };
+
+  const addAuditLog = (action: string, details: string, propertyId?: string) => {
+    if (!currentUser) return;
+    const newLog: AuditLog = {
+      id: `log-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      userId: currentUser.id,
+      userName: currentUser.name,
+      role: currentUser.role,
+      action,
+      details,
+      propertyId
+    };
+    updateSystemSettings({ auditLogs: [newLog, ...systemSettings.auditLogs] });
+  };
+
+  // Role detection
+  const userIsAdmin = currentUser ? isAdminRole(currentUser.role) : false;
+  const userIsFacilityManager = currentUser ? isFacilityManagerRole(currentUser.role) : false;
   
   // UI states
   const [activeTab, setActiveTab] = useState<ActiveTabType>("dashboard");
+
+  // Auto-redirect to role-appropriate dashboard on login
+  React.useEffect(() => {
+    if (currentUser && activeTab === "dashboard") {
+      if (userIsAdmin) setActiveTab("admin-dashboard");
+      else if (userIsFacilityManager) setActiveTab("facility-dashboard");
+    }
+  }, [currentUser]);
   const [currentLanguage, setCurrentLanguage] = useState<"en" | "sw">("en");
   const [searchQuery, setSearchQuery] = useState("");
   const [phaseFilter, setPhaseFilter] = useState<string>("All");
@@ -453,6 +511,8 @@ export default function App() {
           entryCount={calculations.entryCount}
           currentLanguage={currentLanguage}
           unreadNotifications={notifications.filter(n => !n.isRead).length}
+          userIsAdmin={userIsAdmin}
+          userIsFacilityManager={userIsFacilityManager}
         />
 
         {/* Outer overlay for mobile sidebar */}
@@ -580,6 +640,58 @@ export default function App() {
                 sustainability={sustainabilityMetrics}
                 predictions={predictions}
                 anomalies={anomalies}
+              />
+            )}
+
+            {activeTab === "admin-dashboard" && userIsAdmin && (
+              <AdminDashboard
+                properties={properties}
+                costEntries={costEntries}
+                maintenanceTasks={maintenanceTasks}
+                vendors={vendors}
+                assets={assets}
+                compliance={complianceItems}
+                predictions={predictions}
+                anomalies={anomalies}
+                notifications={notifications}
+                systemSettings={systemSettings}
+                setActiveTab={setActiveTab}
+                triggerToast={triggerToast}
+                currentUser={currentUser}
+              />
+            )}
+
+            {activeTab === "facility-dashboard" && userIsFacilityManager && (
+              <FacilityDashboard
+                selectedProperty={selectedProperty}
+                selectedPropertyId={selectedPropertyId}
+                calculations={calculations}
+                maintenanceTasks={maintenanceTasks}
+                assets={assets}
+                compliance={complianceItems}
+                sustainability={sustainabilityMetrics}
+                predictions={predictions}
+                notifications={notifications}
+                anomalies={anomalies}
+                setActiveTab={setActiveTab}
+                triggerToast={triggerToast}
+                currentUser={currentUser}
+              />
+            )}
+
+            {activeTab === "system-settings" && userIsAdmin && (
+              <SystemSettingsPanel
+                systemSettings={systemSettings}
+                onSafetyMarginChange={handleSafetyMarginChange}
+                onUpdateSettings={updateSystemSettings}
+                triggerToast={triggerToast}
+              />
+            )}
+
+            {activeTab === "user-management" && userIsAdmin && (
+              <UserManagement
+                currentUser={currentUser}
+                triggerToast={triggerToast}
               />
             )}
 

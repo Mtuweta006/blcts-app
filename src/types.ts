@@ -281,6 +281,8 @@ export interface RiskItem {
 
 export type ActiveTabType =
   | "dashboard"
+  | "admin-dashboard"
+  | "facility-dashboard"
   | "properties-mgmt"
   | "cost-estimation"
   | "vendors"
@@ -290,4 +292,56 @@ export type ActiveTabType =
   | "sustainability"
   | "compliance"
   | "reports"
-  | "notifications";
+  | "notifications"
+  | "system-settings"
+  | "user-management";
+
+export interface PricingItem {
+  id: string;
+  name: string;
+  basePrice: number;
+  unit: string;
+  notes?: string;
+}
+
+export interface RegionalPricing {
+  materials: PricingItem[];
+  labour: PricingItem[];
+  services: PricingItem[];
+  notes?: string;
+}
+
+export interface RegionalPricingDatabase {
+  [county: string]: RegionalPricing;
+}
+
+export interface PricingEngineConfig {
+  defaultSafetyMargin: number;
+  minSafetyMargin: number;
+  maxSafetyMargin: number;
+  currency: string;
+  storageKey: string;
+}
+
+export interface SystemSettings {
+  safetyMargin: number;
+  aiModel: string;
+  notificationChannels: {
+    inApp: boolean;
+    email: boolean;
+    sms: boolean;
+  };
+  auditLogs: AuditLog[];
+}
+
+export const ADMIN_ROLES: UserRole[] = ["Developer", "Super Admin", "Executive", "Finance Officer", "Auditor"];
+
+export const FM_ROLES: UserRole[] = ["Facility Manager", "Maintenance Engineer", "Property Manager"];
+
+export function isAdminRole(role: string): boolean {
+  return ADMIN_ROLES.includes(role as UserRole);
+}
+
+export function isFacilityManagerRole(role: string): boolean {
+  return FM_ROLES.includes(role as UserRole);
+}

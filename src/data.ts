@@ -6,7 +6,8 @@
 import {
   Property, CostEntry, MaintenanceTask, ChartDataPoint, AIInsight,
   Vendor, Material, Asset, MaintenanceRecord, ComplianceItem,
-  SustainabilityMetric, AIPrediction, Anomaly, RiskItem, AppNotification
+  SustainabilityMetric, AIPrediction, Anomaly, RiskItem, AppNotification,
+  SystemSettings, AuditLog
 } from "./types";
 
 export const initialProperties: Property[] = [
@@ -398,4 +399,20 @@ export const getAIInsights = (propertyId: string): AIInsight[] => {
       { type: "opportunity", title: "Smart Thermostat Cluster Integration", description: "Sub-blocks show high temperature fluctuation during Nairobi's dry season, triggering heating-cooling overlaps.", financialImpact: "Saves KSh 90,000 in monthly building operational logs", recommendedAction: "Deploy smart centralized climate clusters to regulate zones automatically." }
     ];
   }
+};
+
+export const initialSystemSettings: SystemSettings = {
+  safetyMargin: 20,
+  aiModel: "gemini-2.0-flash",
+  notificationChannels: {
+    inApp: true,
+    email: true,
+    sms: false
+  },
+  auditLogs: [
+    { id: "log-1", timestamp: "2026-07-04T08:00:00Z", userId: "user-admin", userName: "Abdulwahab Wandera", role: "Developer", action: "System Login", details: "Administrator logged into platform dashboard" },
+    { id: "log-2", timestamp: "2026-07-04T07:30:00Z", userId: "user-manager", userName: "Kamau Njoroge", role: "Facility Manager", action: "Maintenance Update", details: "Updated maintenance task status for Thika Road Commercial Park", propertyId: "prop-2" },
+    { id: "log-3", timestamp: "2026-07-03T16:45:00Z", userId: "user-admin", userName: "Abdulwahab Wandera", role: "Developer", action: "Settings Change", details: "Adjusted safety margin from KSh 15 to KSh 20" },
+    { id: "log-4", timestamp: "2026-07-03T14:20:00Z", userId: "user-engineer", userName: "Jane Atieno", role: "Maintenance Engineer", action: "Asset Inspection", details: "Completed HVAC motor bearing inspection at Thika Road Commercial Park", propertyId: "prop-2" }
+  ]
 };

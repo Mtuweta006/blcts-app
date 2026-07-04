@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Building2, Plus, Trash2, FileText, CloudUpload as UploadCloud, Check, Sparkles, MapPin, X, FileCheck2, RefreshCw } from "lucide-react";
 import { Property } from "../types";
+import { countyList, countyCities } from "../data/regionalPricing";
 
 interface PropertyManagementProps {
   properties: Property[];
@@ -36,7 +37,9 @@ export default function PropertyManagement({
     units: 12,
     capexBudget: 120000000,
     opexBudget: 15000000,
-    description: ""
+    description: "",
+    county: "Nairobi",
+    city: "Nairobi CBD"
   });
 
   // Drag and Drop States
@@ -135,13 +138,16 @@ export default function PropertyManagement({
       renovationCost: 0,
       otherCost: 0,
       isSoftDeleted: false,
-      status: "Active"
+      status: "Active",
+      county: newProject.county,
+      city: newProject.city,
+      country: "Kenya"
     };
 
     setProperties(prev => [...prev, created]);
     setSelectedPropertyId(created.id);
     setIsAddModalOpen(false);
-    triggerToast(`Project "${created.name}" created successfully!`, "success");
+    triggerToast(`Project "${created.name}" created in ${newProject.county}!`, "success");
 
     // Reset Form
     setNewProject({
@@ -153,7 +159,9 @@ export default function PropertyManagement({
       units: 12,
       capexBudget: 120000000,
       opexBudget: 15000000,
-      description: ""
+      description: "",
+      county: "Nairobi",
+      city: "Nairobi CBD"
     });
   };
 
@@ -385,6 +393,17 @@ export default function PropertyManagement({
                 <div>
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Location</span>
                   <span className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 block">{selectedProperty.location}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">County</span>
+                  <span className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 block flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-emerald-500" />
+                    {selectedProperty.county || "Nairobi"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">City/Town</span>
+                  <span className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 block">{selectedProperty.city || "—"}</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Floors</span>
@@ -727,6 +746,33 @@ export default function PropertyManagement({
                   className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   placeholder="e.g. Westlands, Nairobi"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">County *</label>
+                  <select
+                    value={newProject.county}
+                    onChange={e => {
+                      const county = e.target.value;
+                      const cities = countyCities[county] || [];
+                      setNewProject({...newProject, county, city: cities[0] || ""});
+                    }}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  >
+                    {countyList.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">City/Town *</label>
+                  <select
+                    value={newProject.city}
+                    onChange={e => setNewProject({...newProject, city: e.target.value})}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  >
+                    {(countyCities[newProject.county] || []).map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

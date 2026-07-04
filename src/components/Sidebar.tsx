@@ -12,7 +12,11 @@ import {
   Leaf,
   Bell,
   Users,
-  Boxes
+  Boxes,
+  Settings,
+  UserCog,
+  LayoutDashboard,
+  Building2
 } from "lucide-react";
 import { Property, ActiveTabType } from "../types";
 
@@ -30,6 +34,8 @@ interface SidebarProps {
   entryCount: number;
   currentLanguage: "en" | "sw";
   unreadNotifications?: number;
+  userIsAdmin?: boolean;
+  userIsFacilityManager?: boolean;
 }
 
 export default function Sidebar({
@@ -45,7 +51,9 @@ export default function Sidebar({
   selectedProperty,
   entryCount,
   currentLanguage,
-  unreadNotifications = 0
+  unreadNotifications = 0,
+  userIsAdmin = false,
+  userIsFacilityManager = false
 }: SidebarProps) {
 
   const isEn = currentLanguage === "en";
@@ -58,19 +66,30 @@ export default function Sidebar({
       : "Kukadiria Gharama ya Jumla ya Umiliki (TCO) husaidia kuondoa upendeleo wa gharama ya kwanza, na kuokoa hadi 35% ya gharama za uendeshaji."
   };
 
-  const navItems: { tab: ActiveTabType; label: string; icon: any; color: string; badge?: number }[] = [
+  const navItems: { tab: ActiveTabType; label: string; icon: any; color: string; badge?: number; adminOnly?: boolean; fmOnly?: boolean }[] = [
     { tab: "dashboard", label: "Dashboard", icon: Activity, color: "text-emerald-400" },
+    { tab: "admin-dashboard", label: "Admin Dashboard", icon: LayoutDashboard, color: "text-emerald-400", adminOnly: true },
+    { tab: "facility-dashboard", label: "Facility Dashboard", icon: LayoutDashboard, color: "text-sky-400", fmOnly: true },
     { tab: "properties-mgmt", label: "Projects", icon: Building, color: "text-emerald-450", badge: properties.filter(p => !p.isSoftDeleted).length },
     { tab: "cost-estimation", label: "Cost Estimation", icon: Cpu, color: "text-cyan-400" },
     { tab: "vendors", label: "Vendors & Materials", icon: Users, color: "text-amber-400" },
     { tab: "assets", label: "Asset Management", icon: Boxes, color: "text-blue-400" },
     { tab: "maintenance", label: "Maintenance", icon: Wrench, color: "text-orange-400" },
-    { tab: "ai-predictions", label: "AI Predictions", icon: Sparkles, color: "text-violet-400" },
+    { tab: "ai-predictions", label: "AI Insights", icon: Sparkles, color: "text-violet-400" },
     { tab: "sustainability", label: "Sustainability", icon: Leaf, color: "text-green-400" },
     { tab: "compliance", label: "Compliance", icon: ShieldCheck, color: "text-teal-400" },
     { tab: "reports", label: "Reports", icon: FileText, color: "text-sky-400" },
     { tab: "notifications", label: "Notifications", icon: Bell, color: "text-rose-400", badge: unreadNotifications },
+    { tab: "user-management", label: "User Management", icon: UserCog, color: "text-indigo-400", adminOnly: true },
+    { tab: "system-settings", label: "System Settings", icon: Settings, color: "text-slate-400", adminOnly: true },
   ];
+
+  const visibleNavItems = navItems.filter(item => {
+    if (item.adminOnly && !userIsAdmin) return false;
+    if (item.fmOnly && !userIsFacilityManager) return false;
+    if (item.tab === "dashboard" && (userIsAdmin || userIsFacilityManager)) return false;
+    return true;
+  });
 
   return (
     <aside
@@ -137,7 +156,7 @@ export default function Sidebar({
           {t.financialHeader}
         </span>
 
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           return (
             <button
