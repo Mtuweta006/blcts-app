@@ -64,15 +64,15 @@ export default function SystemSettingsPanel({
           <div>
             <input
               type="range"
-              min={0}
+              min={20}
               max={100}
               value={localMargin}
               onChange={e => setLocalMargin(Number(e.target.value))}
               className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full appearance-none cursor-pointer accent-emerald-500"
             />
             <div className="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
-              <span>KSh 0</span>
-              <span>KSh 20 (Default)</span>
+              <span>KSh 20 (Min)</span>
+              <span>KSh 50</span>
               <span>KSh 100</span>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function SystemSettingsPanel({
           AI Model Configuration
         </h3>
         <div className="space-y-3">
-          <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Active AI Model</label>
+          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Active AI Model</label>
           <select
             value={aiModel}
             onChange={e => setAiModel(e.target.value)}

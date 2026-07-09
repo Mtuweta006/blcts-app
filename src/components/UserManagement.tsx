@@ -266,58 +266,58 @@ export default function UserManagement({ currentUser, triggerToast }: UserManage
 
             <form onSubmit={editingUser ? handleEditUser : handleAddUser} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Full Name *</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   placeholder="e.g. John Mwangi"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Email *</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email *</label>
                 <input
                   type="email"
                   required
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   placeholder="e.g. user@blcts.com"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Role *</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Role *</label>
                 <select
                   value={formData.role}
                   onChange={e => setFormData({ ...formData, role: e.target.value as UserRole })}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
                 >
                   {allRoles.map(r => <option key={r} value={r}>{r}</option>)}
                 </select>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Organization</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Organization</label>
                 <input
                   type="text"
                   value={formData.organization}
                   onChange={e => setFormData({ ...formData, organization: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   placeholder="e.g. Wandera Investments Ltd"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Phone</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Phone</label>
                 <input
                   type="tel"
                   value={formData.phone}
                   onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
                   placeholder="+254 712 345 678"
                 />
               </div>
@@ -325,12 +325,12 @@ export default function UserManagement({ currentUser, triggerToast }: UserManage
               {/* Scope Properties for FM roles */}
               {isFmRole(formData.role) && (
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider flex items-center gap-1">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                     <ShieldCheck className="w-3 h-3 text-emerald-500" />
                     Assigned Counties (Scope)
                   </label>
                   <p className="text-[10px] text-slate-400 font-light">Select counties this facility manager can access.</p>
-                  <div className="max-h-32 overflow-y-auto bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl p-2 space-y-1">
+                  <div className="max-h-32 overflow-y-auto bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2 space-y-1">
                     {countyList.map(c => (
                       <label key={c} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/40 p-1.5 rounded">
                         <input
@@ -354,12 +354,12 @@ export default function UserManagement({ currentUser, triggerToast }: UserManage
 
               {!editingUser && (
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Password</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Password</label>
                   <input
                     type="password"
                     value={formData.password}
                     onChange={e => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
                     placeholder="Default: defaultPass123"
                   />
                 </div>

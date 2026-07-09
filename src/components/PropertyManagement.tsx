@@ -491,7 +491,7 @@ export default function PropertyManagement({
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white dark:bg-slate-950 p-4 border border-slate-150 dark:border-slate-800 rounded-xl">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-450 uppercase tracking-wider block">Floor Area (SQM)</label>
+                        <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Floor Area (SQM)</label>
                         <input
                           type="number"
                           value={editArea}
@@ -500,7 +500,7 @@ export default function PropertyManagement({
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-450 uppercase tracking-wider block">Number of Floors</label>
+                        <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Number of Floors</label>
                         <input
                           type="number"
                           value={editFloors}
@@ -509,7 +509,7 @@ export default function PropertyManagement({
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-450 uppercase tracking-wider block">Building Type</label>
+                        <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Building Type</label>
                         <select
                           value={editType}
                           onChange={e => setEditType(e.target.value)}
@@ -725,32 +725,32 @@ export default function PropertyManagement({
 
             <form onSubmit={handleCreateProject} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Project Name</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Project Name</label>
                 <input
                   type="text"
                   required
                   value={newProject.name}
                   onChange={e => setNewProject({...newProject, name: e.target.value})}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   placeholder="e.g. Westlands Tower B"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Physical Location</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Physical Location</label>
                 <input
                   type="text"
                   required
                   value={newProject.location}
                   onChange={e => setNewProject({...newProject, location: e.target.value})}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   placeholder="e.g. Westlands, Nairobi"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">County *</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">County *</label>
                   <select
                     value={newProject.county}
                     onChange={e => {
@@ -758,17 +758,17 @@ export default function PropertyManagement({
                       const cities = countyCities[county] || [];
                       setNewProject({...newProject, county, city: cities[0] || ""});
                     }}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
                   >
                     {countyList.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">City/Town *</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">City/Town *</label>
                   <select
                     value={newProject.city}
                     onChange={e => setNewProject({...newProject, city: e.target.value})}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
                   >
                     {(countyCities[newProject.county] || []).map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -777,41 +777,41 @@ export default function PropertyManagement({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Floors</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Floors</label>
                   <input
                     type="number"
                     value={newProject.floors}
                     onChange={e => setNewProject({...newProject, floors: parseInt(e.target.value) || 1})}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Total Units</label>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Units</label>
                   <input
                     type="number"
                     value={newProject.units}
                     onChange={e => setNewProject({...newProject, units: parseInt(e.target.value) || 1})}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Estimated Construction CAPEX (KSh)</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Estimated Construction CAPEX (KSh)</label>
                 <input
                   type="number"
                   value={newProject.capexBudget}
                   onChange={e => setNewProject({...newProject, capexBudget: parseFloat(e.target.value) || 0})}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono font-bold text-emerald-600"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono font-bold text-emerald-600"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Project Description</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Project Description</label>
                 <textarea
                   value={newProject.description}
                   onChange={e => setNewProject({...newProject, description: e.target.value})}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 h-20"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 h-20"
                   placeholder="Summarize structural scope..."
                 />
               </div>

@@ -16,7 +16,8 @@ import {
   Settings,
   UserCog,
   LayoutDashboard,
-  Building2
+  Building2,
+  Crown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Property, ActiveTabType } from "../types";
@@ -38,6 +39,7 @@ interface SidebarProps {
   unreadNotifications?: number;
   userIsAdmin?: boolean;
   userIsFacilityManager?: boolean;
+  userIsOwner?: boolean;
 }
 
 export default function Sidebar({
@@ -55,7 +57,8 @@ export default function Sidebar({
   currentLanguage,
   unreadNotifications = 0,
   userIsAdmin = false,
-  userIsFacilityManager = false
+  userIsFacilityManager = false,
+  userIsOwner = false
 }: SidebarProps) {
 
   const isEn = currentLanguage === "en";
@@ -68,25 +71,32 @@ export default function Sidebar({
       : "Kukadiria Gharama ya Jumla ya Umiliki (TCO) husaidia kuondoa upendeleo wa gharama ya kwanza, na kuokoa hadi 35% ya gharama za uendeshaji."
   };
 
-  const navItems: { tab: ActiveTabType; label: string; icon: any; color: string; badge?: number; adminOnly?: boolean; fmOnly?: boolean }[] = [
-    { tab: "dashboard", label: "Dashboard", icon: Activity, color: "text-emerald-400" },
+  const navItems: { tab: ActiveTabType; label: string; icon: any; color: string; badge?: number; adminOnly?: boolean; fmOnly?: boolean; ownerOnly?: boolean; ownerVisible?: boolean }[] = [
+    { tab: "dashboard", label: "Dashboard", icon: Activity, color: "text-emerald-400", ownerVisible: true },
     { tab: "admin-dashboard", label: "Admin Dashboard", icon: LayoutDashboard, color: "text-emerald-400", adminOnly: true },
     { tab: "facility-dashboard", label: "Facility Dashboard", icon: LayoutDashboard, color: "text-sky-400", fmOnly: true },
-    { tab: "properties-mgmt", label: "Projects", icon: Building, color: "text-emerald-450", badge: properties.filter(p => !p.isSoftDeleted).length },
+    { tab: "owner-dashboard", label: "Owner Dashboard", icon: Crown, color: "text-amber-400", ownerOnly: true },
+    { tab: "properties-mgmt", label: "Projects", icon: Building, color: "text-emerald-500", badge: properties.filter(p => !p.isSoftDeleted).length, ownerVisible: true },
     { tab: "cost-estimation", label: "Cost Estimation", icon: Cpu, color: "text-cyan-400" },
     { tab: "vendors", label: "Vendors & Materials", icon: Users, color: "text-amber-400" },
     { tab: "assets", label: "Asset Management", icon: Boxes, color: "text-blue-400" },
     { tab: "maintenance", label: "Maintenance", icon: Wrench, color: "text-orange-400" },
-    { tab: "ai-predictions", label: "AI Insights", icon: Sparkles, color: "text-violet-400" },
-    { tab: "sustainability", label: "Sustainability", icon: Leaf, color: "text-green-400" },
+    { tab: "ai-predictions", label: "AI Insights", icon: Sparkles, color: "text-violet-400", ownerVisible: true },
+    { tab: "sustainability", label: "Sustainability", icon: Leaf, color: "text-green-400", ownerVisible: true },
     { tab: "compliance", label: "Compliance", icon: ShieldCheck, color: "text-teal-400" },
-    { tab: "reports", label: "Reports", icon: FileText, color: "text-sky-400" },
-    { tab: "notifications", label: "Notifications", icon: Bell, color: "text-rose-400", badge: unreadNotifications },
+    { tab: "reports", label: "Reports", icon: FileText, color: "text-sky-400", ownerVisible: true },
+    { tab: "notifications", label: "Notifications", icon: Bell, color: "text-rose-400", badge: unreadNotifications, ownerVisible: true },
     { tab: "user-management", label: "User Management", icon: UserCog, color: "text-indigo-400", adminOnly: true },
     { tab: "system-settings", label: "System Settings", icon: Settings, color: "text-slate-400", adminOnly: true },
   ];
 
   const visibleNavItems = navItems.filter(item => {
+    // Owner role: only show ownerVisible + ownerOnly items
+    if (userIsOwner) {
+      return item.ownerOnly || item.ownerVisible;
+    }
+    // Admin/FM/other roles: hide ownerOnly items
+    if (item.ownerOnly) return false;
     if (item.adminOnly && !userIsAdmin) return false;
     if (item.fmOnly && !userIsFacilityManager) return false;
     if (item.tab === "dashboard" && (userIsAdmin || userIsFacilityManager)) return false;
@@ -144,7 +154,7 @@ export default function Sidebar({
           </div>
           <button
             onClick={() => { setActiveTab("properties-mgmt"); setIsMobileSidebarOpen(false); }}
-            className="w-full mt-1.5 bg-slate-850 hover:bg-slate-800 text-slate-200 text-[10px] uppercase tracking-wider font-bold py-1.5 rounded-lg border border-slate-700/50 hover:border-emerald-500/30 transition-all cursor-pointer text-center block"
+            className="w-full mt-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-[10px] uppercase tracking-wider font-bold py-1.5 rounded-lg border border-slate-700/50 hover:border-emerald-500/30 transition-all cursor-pointer text-center block"
           >
             Change Project
           </button>

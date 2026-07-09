@@ -233,7 +233,7 @@ export default function LandingPage({
             {workflowSteps.map((item, idx) => (
               <div 
                 key={idx} 
-                className="bg-white dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-850 p-6 rounded-2xl relative shadow-sm group hover:border-indigo-500/50 dark:hover:border-indigo-400/40 transition-all text-left"
+                className="bg-white dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 p-6 rounded-2xl relative shadow-sm group hover:border-indigo-500/50 dark:hover:border-indigo-400/40 transition-all text-left"
                 id={`workflow-step-${idx}`}
               >
                 <div className="text-3xl font-black text-indigo-500/20 dark:text-indigo-400/10 group-hover:text-indigo-500/40 transition-colors absolute top-4 right-6 font-mono">
@@ -319,7 +319,7 @@ export default function LandingPage({
               BLCTS Support Team
             </span>
             <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-              support@blcts.io • © 2026 BLCTS
+              support@blcts.com • © 2025 BLCTS
             </span>
           </div>
 

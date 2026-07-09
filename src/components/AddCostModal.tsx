@@ -118,7 +118,7 @@ export default function AddCostModal({
 
           {/* Lifecycle Phase Segment-Picker */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest font-display">
+            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
               Lifecycle Phase *
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-slate-55 dark:bg-slate-955 rounded-xl border border-slate-200/60 dark:border-slate-800/80">
@@ -141,7 +141,7 @@ export default function AddCostModal({
 
           {/* Searchable Component Tree */}
           <div className="space-y-1.5 relative">
-            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest font-display">
+            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
               System Component / Purpose *
             </label>
             <div className="relative">
@@ -185,7 +185,7 @@ export default function AddCostModal({
                       <div className="text-xs text-slate-900 dark:text-slate-105 font-mono font-medium truncate mt-0.5">
                         {p.label}
                       </div>
-                      <div className="text-[9.5px] text-slate-450 dark:text-slate-500 flex items-center justify-between mt-0.5">
+                      <div className="text-[9.5px] text-slate-500 dark:text-slate-500 flex items-center justify-between mt-0.5">
                         <span>Contractor: {p.defaultContractor}</span>
                         <span>Est: KSh {p.suggestedAmount}</span>
                       </div>
@@ -200,7 +200,7 @@ export default function AddCostModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Amount inside KSh */}
             <div className="space-y-1.5">
-              <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest font-display">
+              <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
                 Amount (KSh) *
               </label>
               <input
@@ -215,7 +215,7 @@ export default function AddCostModal({
 
             {/* Contracting Vendor */}
             <div className="space-y-1.5">
-              <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest font-display">
+              <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
                 Contractor / Supplier *
               </label>
               <input
@@ -231,7 +231,7 @@ export default function AddCostModal({
 
           {/* Date selection */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest font-display">
+            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
               Date Registered *
             </label>
             <input
@@ -245,7 +245,7 @@ export default function AddCostModal({
 
           {/* Memo Description */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest font-display">
+            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
               Memo Description (Optional)
             </label>
             <textarea

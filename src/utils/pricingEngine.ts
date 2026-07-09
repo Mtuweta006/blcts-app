@@ -20,7 +20,7 @@ export function getSafetyMarginFromStorage(): number {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const val = parseFloat(stored);
-      if (!isNaN(val) && val >= 0 && val <= 100) return val;
+      if (!isNaN(val) && val >= 20 && val <= 100) return val;
     }
   } catch (e) {}
   return DEFAULT_SAFETY_MARGIN;
@@ -28,7 +28,8 @@ export function getSafetyMarginFromStorage(): number {
 
 export function setSafetyMarginToStorage(margin: number): void {
   try {
-    localStorage.setItem(STORAGE_KEY, String(margin));
+    const clamped = Math.max(20, Math.min(100, margin));
+    localStorage.setItem(STORAGE_KEY, String(clamped));
   } catch (e) {}
 }
 

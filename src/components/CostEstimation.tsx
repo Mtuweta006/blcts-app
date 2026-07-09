@@ -278,8 +278,8 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Control Column */}
-        <div className="lg:col-span-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-850 rounded-2xl p-5 space-y-5">
-          <h4 className="text-xs font-bold text-slate-850 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800 pb-2">
+        <div className="lg:col-span-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-200/50 dark:border-slate-800 rounded-2xl p-5 space-y-5">
+          <h4 className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800 pb-2">
             <Sliders className="w-4 h-4 text-emerald-500" />
             Parameters
           </h4>
@@ -303,7 +303,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
 
           <div className="space-y-4 pt-1">
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-slate-450 block">County (Location)</label>
+              <label className="text-[10px] uppercase font-bold text-slate-500 block">County (Location)</label>
               <select
                 value={selectedCounty}
                 onChange={e => {
@@ -318,7 +318,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-slate-450 block">City/Town</label>
+              <label className="text-[10px] uppercase font-bold text-slate-500 block">City/Town</label>
               <select
                 value={selectedCity}
                 onChange={e => setSelectedCity(e.target.value)}
@@ -329,7 +329,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-slate-450 block">Floor Area (SQM)</label>
+              <label className="text-[10px] uppercase font-bold text-slate-500 block">Floor Area (SQM)</label>
               <input
                 type="number"
                 disabled={!useManualOverride}
@@ -340,7 +340,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-slate-450 block">Number of Floors</label>
+              <label className="text-[10px] uppercase font-bold text-slate-500 block">Number of Floors</label>
               <input
                 type="number"
                 disabled={!useManualOverride}
@@ -418,7 +418,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
               <div className="overflow-x-auto border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm bg-white dark:bg-slate-900">
                 <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-950 text-slate-450 dark:text-slate-500 font-mono text-[10px] uppercase font-bold tracking-wider border-b border-slate-150 dark:border-slate-850">
+                    <tr className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-500 font-mono text-[10px] uppercase font-bold tracking-wider border-b border-slate-150 dark:border-slate-800">
                       <th className="py-3 px-4">Component</th>
                       <th className="py-3 px-4 text-right">Quantity</th>
                       <th className="py-3 px-4 text-right">Base Price</th>
@@ -438,7 +438,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
                             </span>
                           )}
                           {item.calculationNotes && (
-                            <span className="text-[10px] text-slate-450 dark:text-slate-500 block font-light mt-1 max-w-sm leading-normal">
+                            <span className="text-[10px] text-slate-500 dark:text-slate-500 block font-light mt-1 max-w-sm leading-normal">
                               {item.calculationNotes}
                             </span>
                           )}
@@ -471,15 +471,15 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
               </div>
 
               {/* VISUAL TCO PROGRESSION */}
-              <div className="bg-slate-50 dark:bg-slate-950 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-850 space-y-4">
-                <h4 className="text-xs font-bold text-slate-850 dark:text-slate-300 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-slate-50 dark:bg-slate-950 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-800 space-y-4">
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 pb-2">
                   Total Cost of Ownership (TCO) Lifecycle Progression
                 </h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center text-center">
                   <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
                     <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Construction Cost</span>
-                    <span className="font-mono font-extrabold text-xs text-slate-850 dark:text-slate-200">
+                    <span className="font-mono font-extrabold text-xs text-slate-800 dark:text-slate-200">
                       KSh {totalConstructionCost.toLocaleString(undefined, {maximumFractionDigits: 0})}
                     </span>
                   </div>
@@ -488,7 +488,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
                   
                   <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
                     <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Estimated Operational Cost</span>
-                    <span className="font-mono font-extrabold text-xs text-slate-850 dark:text-slate-200">
+                    <span className="font-mono font-extrabold text-xs text-slate-800 dark:text-slate-200">
                       KSh {estimatedOperationalCost.toLocaleString(undefined, {maximumFractionDigits: 0})}
                     </span>
                   </div>
@@ -525,7 +525,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
               </div>
 
               {/* TRANSPARENCY BLOCK */}
-              <div className="bg-slate-50 dark:bg-slate-950 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-850 space-y-3 text-xs">
+              <div className="bg-slate-50 dark:bg-slate-950 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-800 space-y-3 text-xs">
                 <h5 className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                   How this estimate was generated (Transparency Model)

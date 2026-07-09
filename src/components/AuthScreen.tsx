@@ -12,7 +12,8 @@ import {
   KeyRound,
   Eye,
   EyeOff,
-  Sparkles
+  Sparkles,
+  Crown
 } from "lucide-react";
 import { User } from "../types";
 import { motion, AnimatePresence } from "motion/react";
@@ -28,7 +29,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState<"Developer" | "Facility Manager">("Developer");
+  const [role, setRole] = useState<"Developer" | "Facility Manager" | "Building Owner">("Developer");
   const [organization, setOrganization] = useState("Wandera Investments Ltd");
   
   const [showPassword, setShowPassword] = useState(false);
@@ -38,22 +39,29 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
   const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "syncing_sensor" | "finalizing" | "success">("idle");
   const [syncMessage, setSyncMessage] = useState("");
  
-  const handleQuickLogin = (preset: "admin" | "manager") => {
+  const handleQuickLogin = (preset: "admin" | "manager" | "owner") => {
     setError(null);
     if (preset === "admin") {
-      setEmail("wanderaabdulwahab4@gmail.com");
-      setPassword("executivePass123");
+      setEmail("admin@blcts.com");
+      setPassword("adminPass123");
       setName("Abdulwahab Wandera");
       setRole("Developer");
       setOrganization("Wandera Investments Ltd");
       setPhone("+254 712 345 678");
     } else if (preset === "manager") {
-      setEmail("manager.thika@blcts.com");
+      setEmail("manager@blcts.com");
       setPassword("managerPass99");
       setName("Kamau Njoroge");
       setRole("Facility Manager");
       setOrganization("Thika Block Management");
       setPhone("+254 722 987 654");
+    } else if (preset === "owner") {
+      setEmail("owner@blcts.com");
+      setPassword("ownerPass77");
+      setName("Aisha Mohamed");
+      setRole("Building Owner");
+      setOrganization("Mohamed Development Group");
+      setPhone("+254 733 123 456");
     }
     // Select login tab automatically
     setActiveTab("login");
@@ -61,38 +69,64 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
 
   // Initialize standard user accounts with SHA-256 secure hashes on mount
   React.useEffect(() => {
+    const defaultUsers = [
+      {
+        id: "user-admin",
+        email: "admin@blcts.com",
+        name: "Abdulwahab Wandera",
+        role: "Developer",
+        organization: "Wandera Investments Ltd",
+        phone: "+254 712 345 678",
+        passwordHash: "4b971cafd7903d148bda8f8aa7faa57b769cded513ecb31e124d1e010a80555f" // SHA-256 of "adminPass123"
+      },
+      {
+        id: "user-manager",
+        email: "manager@blcts.com",
+        name: "Kamau Njoroge",
+        role: "Facility Manager",
+        organization: "Thika Block Management",
+        phone: "+254 722 987 654",
+        passwordHash: "276cbf1e0dd8b5d1bd515780206dfbf0257d379494feefee8503f2d85e9a7c2a" // SHA-256 of "managerPass99"
+      },
+      {
+        id: "user-owner",
+        email: "owner@blcts.com",
+        name: "Aisha Mohamed",
+        role: "Building Owner",
+        organization: "Mohamed Development Group",
+        phone: "+254 733 123 456",
+        passwordHash: "29cf5c7634755973d2646d902a6a46ffd64d5cc3d3d91096d80811a2beee7b15" // SHA-256 of "ownerPass77"
+      },
+      {
+        id: "user-engineer",
+        email: "lead.engineer@davis-shirtliff.co.ke",
+        name: "Jane Atieno",
+        role: "Maintenance Engineer",
+        organization: "Davis & Shirtliff Tech",
+        phone: "+254 733 445 566",
+        passwordHash: "02f0cdcbe300c5a93067cecb66b1aa7a78834a5af425c02f73b636f7745433fc" // SHA-256 of "engineerPass22"
+      }
+    ];
     const stored = localStorage.getItem("blcts-users");
     if (!stored) {
-      const defaultUsers = [
-        {
-          id: "user-admin",
-          email: "wanderaabdulwahab4@gmail.com",
-          name: "Abdulwahab Wandera",
-          role: "Developer",
-          organization: "Wandera Investments Ltd",
-          phone: "+254 712 345 678",
-          passwordHash: "54b79259254eaed6593410bd63c089de0d797d2b4f020683060a21bbad6da5ed" // SHA-256 of "executivePass123"
-        },
-        {
-          id: "user-manager",
-          email: "manager.thika@blcts.com",
-          name: "Kamau Njoroge",
-          role: "Facility Manager",
-          organization: "Thika Block Management",
-          phone: "+254 722 987 654",
-          passwordHash: "276cbf1e0dd8b5d1bd515780206dfbf0257d379494feefee8503f2d85e9a7c2a" // SHA-256 of "managerPass99"
-        },
-        {
-          id: "user-engineer",
-          email: "lead.engineer@davis-shirtliff.co.ke",
-          name: "Jane Atieno",
-          role: "Maintenance Engineer",
-          organization: "Davis & Shirtliff Tech",
-          phone: "+254 733 445 566",
-          passwordHash: "02f0cdcbe300c5a93067cecb66b1aa7a78834a5af425c02f73b636f7745433fc" // SHA-256 of "engineerPass22"
-        }
-      ];
       localStorage.setItem("blcts-users", JSON.stringify(defaultUsers));
+    } else {
+      // Merge: ensure demo accounts always exist with correct credentials
+      try {
+        const existing = JSON.parse(stored);
+        const merged = [...existing];
+        for (const demo of defaultUsers) {
+          const idx = merged.findIndex((u: any) => u.id === demo.id || u.email === demo.email);
+          if (idx >= 0) {
+            merged[idx] = { ...merged[idx], ...demo };
+          } else {
+            merged.push(demo);
+          }
+        }
+        localStorage.setItem("blcts-users", JSON.stringify(merged));
+      } catch {
+        localStorage.setItem("blcts-users", JSON.stringify(defaultUsers));
+      }
     }
   }, []);
 
@@ -272,7 +306,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                 <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-display">
                   Live IoT Telemetry Loop
                 </h4>
-                <p className="text-[11px] text-slate-450 dark:text-slate-500 mt-0.5 leading-snug">
+                <p className="text-[11px] text-slate-500 dark:text-slate-500 mt-0.5 leading-snug">
                   Continuously streams temperature, power factor, pressure anomalies, and vibration offsets.
                 </p>
               </div>
@@ -286,7 +320,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                 <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-display">
                   TCO Forecast Engine
                 </h4>
-                <p className="text-[11px] text-slate-450 dark:text-slate-500 mt-0.5 leading-snug">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                   Visualizes actual cumulative outlays across a 30-year operational horizon in beautiful charts.
                 </p>
               </div>
@@ -300,7 +334,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                 <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-display">
                   Safaricom Daraja API Sync
                 </h4>
-                <p className="text-[11px] text-slate-450 dark:text-slate-500 mt-0.5 leading-snug">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                   Execute instant contractor M-Pesa payouts directly inside the maintenance log hub.
                 </p>
               </div>
@@ -310,7 +344,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
           {/* Quick-select profiles banner info */}
           <div className="p-3 bg-slate-100 dark:bg-slate-900/60 border border-slate-200/40 dark:border-slate-800/80 rounded-2xl flex items-center gap-2 text-xs">
             <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span className="text-slate-550 dark:text-slate-400 leading-normal">
+            <span className="text-slate-600 dark:text-slate-400 leading-normal">
               Select a preset account on the right to quickly access the platform.
             </span>
           </div>
@@ -346,7 +380,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                     className={`flex-1 py-2 text-xs rounded-lg transition-all cursor-pointer ${
                       activeTab === "login"
                         ? "bg-white dark:bg-slate-800 text-slate-950 dark:text-emerald-400 shadow-sm"
-                        : "text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200"
+                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                     }`}
                   >
                     Log In
@@ -356,7 +390,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                     className={`flex-1 py-2 text-xs rounded-lg transition-all cursor-pointer ${
                       activeTab === "signup"
                         ? "bg-white dark:bg-slate-800 text-slate-950 dark:text-emerald-400 shadow-sm"
-                        : "text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-slate-200"
+                        : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
                     }`}
                   >
                     Register Account
@@ -387,7 +421,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                   
                   {activeTab === "signup" && (
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold text-slate-450 dark:text-slate-505 uppercase tracking-wider block font-display">
+                      <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block font-display">
                         Full Name *
                       </label>
                       <div className="relative">
@@ -405,7 +439,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                   )}
 
                   <div className="space-y-1.5">
-                    <label className="block text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block font-display">
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block font-display">
                       Work Email *
                     </label>
                     <div className="relative">
@@ -424,7 +458,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                   {/* Standard details for user customization */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block font-display">
+                      <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block font-display">
                         System Role Profile *
                       </label>
                       <div className="relative">
@@ -433,15 +467,16 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                           onChange={(e) => setRole(e.target.value as any)}
                           className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 pl-10 text-xs focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 caret-slate-900 dark:caret-slate-100 font-semibold cursor-pointer appearance-none"
                         >
-                          <option value="Developer">Developer</option>
+                          <option value="Developer">Administrator</option>
                           <option value="Facility Manager">Facility Manager</option>
+                          <option value="Building Owner">Building Owner / Developer</option>
                         </select>
                         <Briefcase className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block font-display">
+                      <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block font-display">
                         Mobile Money Contact (KES Draw)
                       </label>
                       <div className="relative">
@@ -458,7 +493,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block font-display">
+                    <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block font-display">
                       Corporate Organization
                     </label>
                     <input
@@ -472,7 +507,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
 
                   <div className="space-y-1.5">
                     <div className="flex justify-between">
-                      <label className="block text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block font-display">
+                      <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block font-display">
                         Secret Password *
                       </label>
                       {activeTab === "login" && (
@@ -521,9 +556,9 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                       onClick={() => handleQuickLogin("admin")}
                       className="border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-xl text-left transition-all hover:bg-white dark:hover:bg-slate-900 group cursor-pointer"
                     >
-                      <div className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Admin Executive</div>
+                      <div className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Administrator</div>
                       <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-emerald-400 mt-0.5">System Administrator</div>
-                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">admin@blcts.io</div>
+                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">admin@blcts.com</div>
                     </button>
 
                     <button
@@ -532,8 +567,18 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                       className="border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-xl text-left transition-all hover:bg-white dark:hover:bg-slate-900 group cursor-pointer"
                     >
                       <div className="text-[9px] font-bold text-sky-400 uppercase tracking-widest">Kamau Njoroge</div>
-                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-sky-450 mt-0.5">Facility Manager</div>
-                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">manager.thika@blcts.com</div>
+                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-sky-400 mt-0.5">Facility Manager</div>
+                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">manager@blcts.com</div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleQuickLogin("owner")}
+                      className="border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-xl text-left transition-all hover:bg-white dark:hover:bg-slate-900 group cursor-pointer sm:col-span-2"
+                    >
+                      <div className="text-[9px] font-bold text-amber-500 uppercase tracking-widest">Building Owner</div>
+                      <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-amber-400 mt-0.5">Aisha Mohamed</div>
+                      <div className="text-[9px] text-slate-400 dark:text-slate-500 truncate mt-0.5">owner@blcts.com</div>
                     </button>
                   </div>
                 </div>

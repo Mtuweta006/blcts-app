@@ -23,13 +23,14 @@ import {
   getFinancialTrends,
   getAIInsights
 } from "./data";
-import { Property, CostEntry, MaintenanceTask, LifecyclePhase, User, Vendor, Material, Asset, MaintenanceRecord, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification, SystemSettings, AuditLog, isAdminRole, isFacilityManagerRole } from "./types";
+import { Property, CostEntry, MaintenanceTask, LifecyclePhase, User, Vendor, Material, Asset, MaintenanceRecord, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification, SystemSettings, AuditLog, isAdminRole, isFacilityManagerRole, isOwnerRole } from "./types";
 
 // Import modular sub-components for "Professional Polish" theme and chunked optimization
 import Sidebar from "./components/Sidebar";
 import ExecutiveDashboard from "./components/ExecutiveDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import FacilityDashboard from "./components/FacilityDashboard";
+import OwnerDashboard from "./components/OwnerDashboard";
 import SystemSettingsPanel from "./components/SystemSettings";
 import UserManagement from "./components/UserManagement";
 import VendorCenter from "./components/VendorCenter";
@@ -151,6 +152,7 @@ export default function App() {
   // Role detection
   const userIsAdmin = currentUser ? isAdminRole(currentUser.role) : false;
   const userIsFacilityManager = currentUser ? isFacilityManagerRole(currentUser.role) : false;
+  const userIsOwner = currentUser ? isOwnerRole(currentUser.role) : false;
   
   // UI states
   const [activeTab, setActiveTab] = useState<ActiveTabType>("dashboard");
@@ -160,8 +162,28 @@ export default function App() {
     if (currentUser && activeTab === "dashboard") {
       if (userIsAdmin) setActiveTab("admin-dashboard");
       else if (userIsFacilityManager) setActiveTab("facility-dashboard");
+      else if (userIsOwner) setActiveTab("owner-dashboard");
     }
   }, [currentUser]);
+
+  // Tab guard: prevent unauthorized tab access based on role
+  React.useEffect(() => {
+    if (!currentUser) return;
+    const adminOnlyTabs: ActiveTabType[] = ["admin-dashboard", "user-management", "system-settings"];
+    const fmOnlyTabs: ActiveTabType[] = ["facility-dashboard"];
+    const ownerOnlyTabs: ActiveTabType[] = ["owner-dashboard"];
+    const ownerForbiddenTabs: ActiveTabType[] = ["admin-dashboard", "facility-dashboard", "cost-estimation", "vendors", "assets", "maintenance", "compliance", "user-management", "system-settings"];
+
+    if (userIsOwner && (ownerForbiddenTabs.includes(activeTab) || (!ownerOnlyTabs.includes(activeTab) && !["dashboard", "properties-mgmt", "ai-predictions", "sustainability", "reports", "notifications"].includes(activeTab)))) {
+      setActiveTab("owner-dashboard");
+    }
+    if (userIsFacilityManager && (adminOnlyTabs.includes(activeTab) || ownerOnlyTabs.includes(activeTab))) {
+      setActiveTab("facility-dashboard");
+    }
+    if (userIsAdmin && (fmOnlyTabs.includes(activeTab) || ownerOnlyTabs.includes(activeTab))) {
+      // Admin can view FM/owner dashboards for oversight, so allow — no redirect
+    }
+  }, [activeTab, currentUser, userIsAdmin, userIsFacilityManager, userIsOwner]);
   const [currentLanguage, setCurrentLanguage] = useState<"en" | "sw">("en");
   const [searchQuery, setSearchQuery] = useState("");
   const [phaseFilter, setPhaseFilter] = useState<string>("All");
@@ -530,6 +552,7 @@ export default function App() {
           unreadNotifications={notifications.filter(n => !n.isRead).length}
           userIsAdmin={userIsAdmin}
           userIsFacilityManager={userIsFacilityManager}
+          userIsOwner={userIsOwner}
         />
 
         {/* Outer overlay for mobile sidebar */}
@@ -609,7 +632,7 @@ export default function App() {
                     {currentUser?.role || "System Administrator"}
                   </span>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-slate-950 dark:bg-slate-850 text-slate-100 font-extrabold text-xs flex items-center justify-center border border-slate-800 dark:border-slate-700 shadow-sm select-none">
+                <div className="w-9 h-9 rounded-xl bg-slate-950 dark:bg-slate-900 text-slate-100 font-extrabold text-xs flex items-center justify-center border border-slate-800 dark:border-slate-700 shadow-sm select-none">
                   {currentUser ? getInitials(currentUser.name) : "AW"}
                 </div>
                 
@@ -699,6 +722,23 @@ export default function App() {
                 predictions={predictions}
                 notifications={notifications}
                 anomalies={anomalies}
+                setActiveTab={setActiveTab}
+                triggerToast={triggerToast}
+                currentUser={currentUser}
+              />
+            )}
+
+            {activeTab === "owner-dashboard" && userIsOwner && (
+              <OwnerDashboard
+                properties={properties}
+                costEntries={costEntries}
+                maintenanceTasks={maintenanceTasks}
+                predictions={predictions}
+                anomalies={anomalies}
+                compliance={complianceItems}
+                sustainability={sustainabilityMetrics}
+                assets={assets}
+                notifications={notifications}
                 setActiveTab={setActiveTab}
                 triggerToast={triggerToast}
                 currentUser={currentUser}
