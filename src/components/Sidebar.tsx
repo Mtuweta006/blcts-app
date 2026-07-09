@@ -16,7 +16,6 @@ import {
   Settings,
   UserCog,
   LayoutDashboard,
-  Building2,
   Crown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";

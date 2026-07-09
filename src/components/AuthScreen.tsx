@@ -29,14 +29,14 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState<"Administrator" | "Facility Manager" | "Building Owner">("Administrator");
+  const [role, setRole] = useState<"Facility Manager" | "Building Owner">("Facility Manager");
   const [organization, setOrganization] = useState("Wandera Investments Ltd");
   
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   // Simulation states
-  const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "syncing_sensor" | "finalizing" | "success">("idle");
+  const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "finalizing" | "success">("idle");
   const [syncMessage, setSyncMessage] = useState("");
  
   const handleQuickLogin = (preset: "admin" | "manager" | "owner") => {
@@ -45,7 +45,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
       setEmail("admin@blcts.com");
       setPassword("adminPass123");
       setName("Abdulwahab Wandera");
-      setRole("Administrator");
+      setRole("Facility Manager");
       setOrganization("Wandera Investments Ltd");
       setPhone("+254 712 345 678");
     } else if (preset === "manager") {
@@ -140,25 +140,20 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
 
   const executeAuthSimulation = (userPayload: User) => {
     setAuthStatus("verifying");
-    setSyncMessage("Authenticating credentials & establishing session...");
+    setSyncMessage("Authenticating credentials...");
     
     setTimeout(() => {
-      setAuthStatus("syncing_sensor");
-      setSyncMessage("Loading building portfolio and cost data...");
-    }, 1200);
-
-    setTimeout(() => {
       setAuthStatus("finalizing");
-      setSyncMessage("Finalizing session and preparing dashboard...");
-    }, 2400);
+      setSyncMessage("Preparing your dashboard...");
+    }, 600);
 
     setTimeout(() => {
       setAuthStatus("success");
-      setSyncMessage("Verification complete. Redirecting to your dashboard...");
+      setSyncMessage("Welcome. Redirecting to your dashboard...");
       setTimeout(() => {
         onLoginSuccess(userPayload);
-      }, 700);
-    }, 3500);
+      }, 400);
+    }, 1200);
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -166,7 +161,13 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
     setError(null);
 
     if (!email || !password) {
-      setError("Please fill in all standard credential fields.");
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -180,7 +181,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
       );
 
       if (!matchedUser) {
-        setError("Account not found. Please register as a Developer or Facility Manager.");
+        setError("Account not found. Please register or contact your administrator.");
         return;
       }
 
@@ -213,8 +214,24 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
       return;
     }
 
-    if (password.length < 6) {
-      setError("For proper security, passwords require at least 6 characters.");
+    const signupEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!signupEmailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (name.trim().length < 2) {
+      setError("Please enter your full name (at least 2 characters).");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Passwords require at least 8 characters for security.");
+      return;
+    }
+
+    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setError("Passwords must include at least one uppercase letter and one number.");
       return;
     }
 
@@ -262,7 +279,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
 
   return (
     <div className={`min-h-screen flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-200 ${
-      isDarkMode ? "bg-slate-950 text-slate-105" : "bg-slate-50 text-slate-900"
+      isDarkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
     }`}>
       {/* Dynamic Background visual ornaments */}
       <div className="absolute top-[-25%] left-[-15%] w-[60%] h-[70%] rounded-full bg-gradient-to-br from-emerald-500/10 to-transparent blur-[120px] pointer-events-none" />
@@ -410,7 +427,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-red-50 dark:bg-rose-950/20 border border-red-200 dark:border-rose-900/40 text-red-800 dark:text-rose-350 rounded-xl text-xs font-semibold flex items-center gap-2 animate-bounce">
+                  <div className="p-3 bg-red-50 dark:bg-rose-950/20 border border-red-200 dark:border-rose-900/40 text-red-800 dark:text-rose-300 rounded-xl text-xs font-semibold flex items-center gap-2">
                     <span className="shrink-0">•</span>
                     <span>{error}</span>
                   </div>
@@ -467,12 +484,14 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                           onChange={(e) => setRole(e.target.value as any)}
                           className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-2 px-3 pl-10 text-xs focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 caret-slate-900 dark:caret-slate-100 font-semibold cursor-pointer appearance-none"
                         >
-                          <option value="Administrator">Administrator</option>
                           <option value="Facility Manager">Facility Manager</option>
                           <option value="Building Owner">Building Owner / Developer</option>
                         </select>
                         <Briefcase className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
                       </div>
+                      <p className="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5">
+                        Administrator accounts are created by an existing administrator. Contact your system administrator if you need admin access.
+                      </p>
                     </div>
 
                     <div className="space-y-1.5">
@@ -619,9 +638,8 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
                     className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-300"
                     style={{ 
                       width: 
-                        authStatus === "verifying" ? "33%" : 
-                        authStatus === "syncing_sensor" ? "66%" : 
-                        authStatus === "finalizing" ? "90%" : "100%" 
+                        authStatus === "verifying" ? "40%" : 
+                        authStatus === "finalizing" ? "85%" : "100%" 
                     }}
                   />
                 </div>

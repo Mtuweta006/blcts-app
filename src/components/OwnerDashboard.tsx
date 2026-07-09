@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { motion } from "motion/react";
 import { Crown, TrendingUp, TrendingDown, Wallet, Building2, Sparkles, Leaf, Activity, TriangleAlert as AlertTriangle, ArrowRight, FileText, ShieldCheck, Cpu, Clock, CircleCheck as CheckCircle2, Wrench, ChartBar as BarChart3 } from "lucide-react";
-import { Property, CostEntry, MaintenanceTask, AIPrediction, Anomaly, ComplianceItem, SustainabilityMetric, Asset, AppNotification, ActiveTabType } from "../types";
+import { Property, CostEntry, MaintenanceTask, AIPrediction, Anomaly, ComplianceItem, SustainabilityMetric, Asset, AppNotification, ActiveTabType, User } from "../types";
 import CountUp from "./CountUp";
 import { staggerContainer, fadeInUp, cardHover } from "../utils/animations";
 
@@ -17,7 +17,7 @@ interface OwnerDashboardProps {
   notifications: AppNotification[];
   setActiveTab: (tab: ActiveTabType) => void;
   triggerToast: (msg: string, type?: "success" | "info" | "warning") => void;
-  currentUser: any;
+  currentUser: User | null;
 }
 
 const formatKSh = (value: number): string => {

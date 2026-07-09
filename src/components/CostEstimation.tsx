@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Cpu, Sparkles, Building2, Layers, RefreshCw, FileSliders as Sliders, Lightbulb, CircleCheck as CheckCircle2, Info, MapPin, ShieldCheck } from "lucide-react";
 import { Property } from "../types";
-import { getAllCounties, getPriceForLocation, getSafetyMarginFromStorage, PriceBreakdown } from "../utils/pricingEngine";
+import { getAllCounties, getPriceForLocation, getSafetyMarginFromStorage, } from "../utils/pricingEngine";
 import { countyCities } from "../data/regionalPricing";
 
 interface CostEstimationProps {

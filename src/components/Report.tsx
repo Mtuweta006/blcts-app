@@ -571,7 +571,7 @@ export default function Report({
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              Export Excel
+              Export CSV
             </button>
           </div>
         </div>

@@ -182,7 +182,7 @@ export default function AddCostModal({
                           {p.phase}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-900 dark:text-slate-105 font-mono font-medium truncate mt-0.5">
+                      <div className="text-xs text-slate-900 dark:text-slate-100 font-mono font-medium truncate mt-0.5">
                         {p.label}
                       </div>
                       <div className="text-[9.5px] text-slate-500 dark:text-slate-500 flex items-center justify-between mt-0.5">
