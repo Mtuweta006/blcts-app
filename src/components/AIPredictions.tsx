@@ -247,13 +247,12 @@ export default function AIPredictions({
             </h3>
           </div>
           <span className="text-[10px] bg-violet-500/10 text-violet-400 px-2.5 py-1 rounded-full font-mono font-bold uppercase tracking-wider border border-violet-500/20">
-            ML-Powered
+            Analytics
           </span>
         </div>
         <p className="text-xs text-slate-400 leading-relaxed">
-          Machine learning forecasts for maintenance costs, equipment failure, budget
-          overruns, and utility consumption — paired with real-time anomaly detection
-          across building operations.
+          Analytics-driven forecasts for maintenance costs, budget overruns, and utility
+          consumption — paired with anomaly detection across building lifecycle operations.
         </p>
       </div>
 

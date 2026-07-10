@@ -171,7 +171,12 @@ export default function SystemSettingsPanel({
           Audit Log
         </h3>
         <div className="space-y-2 max-h-80 overflow-y-auto">
-          {systemSettings.auditLogs.map(log => (
+          {systemSettings.auditLogs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <History className="w-8 h-8 text-slate-300 dark:text-slate-700 mb-2" />
+              <p className="text-xs text-slate-400">No audit events recorded yet. System actions will appear here.</p>
+            </div>
+          ) : systemSettings.auditLogs.map(log => (
             <div key={log.id} className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-950/40 rounded-lg border border-slate-100 dark:border-slate-800">
               <div className="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-[10px] font-bold shrink-0">
                 {log.userName.split(" ").map(n => n[0]).join("").slice(0, 2)}

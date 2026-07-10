@@ -161,6 +161,13 @@ export default function OwnerDashboard({
   const recentNotifications = useMemo(() => notifications.slice(0, 4), [notifications]);
   const topPredictions = useMemo(() => predictions.slice(0, 3), [predictions]);
 
+  const handleOwnerTabChange = (tab: OwnerTab) => {
+    setOwnerTab(tab);
+    if (tab === "explorer" && !selectedPropertyId && properties.length > 0) {
+      setSelectedPropertyId(properties[0].id);
+    }
+  };
+
   const handlePropertySelect = (propId: string) => {
     setSelectedPropertyId(propId);
     setProjectSelectorOpen(false);
@@ -213,7 +220,7 @@ export default function OwnerDashboard({
       <motion.div variants={fadeInUp} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex gap-2 bg-slate-100 dark:bg-slate-900 rounded-xl p-1 border border-slate-200 dark:border-slate-800">
           <button
-            onClick={() => setOwnerTab("portfolio")}
+            onClick={() => handleOwnerTabChange("portfolio")}
             className={`px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
               ownerTab === "portfolio"
                 ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
@@ -224,7 +231,7 @@ export default function OwnerDashboard({
             Portfolio Overview
           </button>
           <button
-            onClick={() => setOwnerTab("explorer")}
+            onClick={() => handleOwnerTabChange("explorer")}
             className={`px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
               ownerTab === "explorer"
                 ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
@@ -443,7 +450,7 @@ export default function OwnerDashboard({
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-black text-slate-900 dark:text-white font-display uppercase tracking-wider">Owned Buildings</h3>
                 <button
-                  onClick={() => setOwnerTab("explorer")}
+                  onClick={() => handleOwnerTabChange("explorer")}
                   className="text-[10px] font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-wider flex items-center gap-1 cursor-pointer"
                 >
                   Explore Projects <ArrowRight className="w-3 h-3" />
@@ -629,9 +636,33 @@ export default function OwnerDashboard({
             className="space-y-6"
           >
             {!selectedProperty || !projectData ? (
-              <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 border border-slate-200 dark:border-slate-800 text-center">
-                <Building2 className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                <p className="text-sm text-slate-500 dark:text-slate-400">Select a project from the dropdown above to view details.</p>
+              <div className="bg-white dark:bg-slate-900 rounded-2xl p-16 border border-slate-200 dark:border-slate-800 text-center">
+                <Building2 className="w-16 h-16 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
+                <h3 className="text-sm font-black text-slate-900 dark:text-white font-display uppercase tracking-wider mb-2">
+                  {properties.length === 0 ? "No Projects Assigned" : "Select a Project"}
+                </h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+                  {properties.length === 0
+                    ? "You do not currently have any assigned projects. Projects assigned by your Administrator will appear here."
+                    : "Choose a project from the dropdown selector above to view its detailed dashboard, including cost breakdowns, lifecycle progress, AI predictions, and maintenance history."}
+                </p>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => handleOwnerTabChange("portfolio")}
+                    className="bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <BarChart3 className="w-3.5 h-3.5" />
+                    View Portfolio Overview
+                  </button>
+                  {properties.length === 0 && (
+                    <button
+                      onClick={() => setActiveTab("notifications")}
+                      className="border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+                    >
+                      Contact Administrator
+                    </button>
+                  )}
+                </div>
               </div>
             ) : (
               <>

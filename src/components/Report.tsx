@@ -375,8 +375,7 @@ export default function Report({
       downloadFile(`BLCTS_Report_${selectedProperty.name}_${stamp}.csv`, buildCSV(), "text/csv;charset=utf-8;");
       triggerToast("CSV report exported successfully", "success");
     } catch (err) {
-      console.error(err);
-      triggerToast("Failed to export CSV", "warning");
+            triggerToast("Failed to export CSV", "warning");
     }
   };
 
@@ -388,8 +387,7 @@ export default function Report({
       downloadFile(`BLCTS_Report_${selectedProperty.name}_${stamp}.xls`, content, "application/vnd.ms-excel");
       triggerToast("Excel report exported successfully", "success");
     } catch (err) {
-      console.error(err);
-      triggerToast("Failed to export Excel", "warning");
+            triggerToast("Failed to export Excel", "warning");
     }
   };
 
@@ -527,8 +525,7 @@ export default function Report({
       printWin.document.close();
       triggerToast("PDF view opened — use your browser's print dialog to save as PDF", "info");
     } catch (err) {
-      console.error(err);
-      triggerToast("Failed to generate PDF view", "warning");
+            triggerToast("Failed to generate PDF view", "warning");
     } finally {
       setExporting(false);
     }
@@ -571,7 +568,7 @@ export default function Report({
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              Export CSV
+              Export Excel
             </button>
           </div>
         </div>

@@ -1,23 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Wrench,
-  Plus,
-  Search,
-  Filter,
-  X,
-  Calendar,
-  Clock,
-  DollarSign,
-  AlertTriangle,
-  Activity,
-  ClipboardList,
-  User,
-  Cog,
-  Package,
-  FileText,
-  BarChart3,
-  TrendingUp,
-} from "lucide-react";
+import { Wrench, Plus, Search, ListFilter as Filter, X, Calendar, Clock, DollarSign, TriangleAlert as AlertTriangle, Activity, ClipboardList, User, Cog, Package, FileText, ChartBar as BarChart3, TrendingUp } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -173,8 +155,7 @@ export default function MaintenanceManagement({
         }
       }
     } catch (err) {
-      console.error("Failed to load persisted maintenance records:", err);
-    }
+          }
   }, []);
 
   // Persist local records to localStorage whenever they change
@@ -182,8 +163,7 @@ export default function MaintenanceManagement({
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(localRecords));
     } catch (err) {
-      console.error("Failed to persist maintenance records:", err);
-    }
+          }
   }, [localRecords]);
 
   // Merge prop records with locally-persisted records (props take precedence by id)

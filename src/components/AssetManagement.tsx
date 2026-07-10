@@ -1,25 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Wrench,
-  Plus,
-  Search,
-  Filter,
-  X,
-  Calendar,
-  Clock,
-  DollarSign,
-  Building2,
-  Zap,
-  Flame,
-  Droplets,
-  Shield,
-  Sun,
-  Wind,
-  AlertTriangle,
-  ArrowUpDown,
-  Package,
-  TrendingUp,
-} from "lucide-react";
+import { Wrench, Plus, Search, ListFilter as Filter, X, Calendar, Clock, DollarSign, Building2, Zap, Flame, Droplets, Shield, Sun, Wind, TriangleAlert as AlertTriangle, ArrowUpDown, Package, TrendingUp } from "lucide-react";
 import { Asset } from "../types";
 
 interface AssetManagementProps {
@@ -201,8 +181,7 @@ export default function AssetManagement({
         }
       }
     } catch (err) {
-      console.error("Failed to load persisted assets:", err);
-    }
+          }
   }, []);
 
   // Persist local assets to localStorage whenever they change
@@ -210,8 +189,7 @@ export default function AssetManagement({
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(localAssets));
     } catch (err) {
-      console.error("Failed to persist assets:", err);
-    }
+          }
   }, [localAssets]);
 
   // Merge prop assets with locally-persisted assets (props take precedence by id)

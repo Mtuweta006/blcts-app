@@ -134,7 +134,7 @@ export function compareCountyPrices(itemId: string, itemType: ItemType): { count
 
 export const pricingEngineConfig: PricingEngineConfig = {
   defaultSafetyMargin: DEFAULT_SAFETY_MARGIN,
-  minSafetyMargin: 0,
+  minSafetyMargin: 20,
   maxSafetyMargin: 100,
   currency: "KSh",
   storageKey: STORAGE_KEY

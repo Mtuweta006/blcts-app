@@ -96,7 +96,7 @@ export default function AddCostModal({
             <Coins className="w-5 h-5 text-emerald-400" />
             <div>
               <h3 className="text-xs uppercase font-extrabold text-slate-400 tracking-wider font-display leading-tight">Record Lifecycle Invoice</h3>
-              <p className="text-[10px] text-slate-405 leading-tight">Log construction outlays or utility bills dynamically</p>
+              <p className="text-[10px] text-slate-500 leading-tight">Log construction outlays or utility bills dynamically</p>
             </div>
           </div>
           <button
@@ -110,7 +110,7 @@ export default function AddCostModal({
         {/* Modal form body */}
         <form onSubmit={handleAddSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           {formError && (
-            <div className="p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-red-800 dark:text-red-350 rounded-xl text-xs font-semibold flex items-center gap-2.5">
+            <div className="p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-red-800 dark:text-red-300 rounded-xl text-xs font-semibold flex items-center gap-2.5">
               <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
               <span>{formError}</span>
             </div>
@@ -121,7 +121,7 @@ export default function AddCostModal({
             <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest font-display">
               Lifecycle Phase *
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-slate-55 dark:bg-slate-955 rounded-xl border border-slate-200/60 dark:border-slate-800/80">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200/60 dark:border-slate-800/80">
               {(["Construction", "Operational", "Maintenance", "End-of-Life"] as LifecyclePhase[]).map(phaseVal => (
                 <button
                   key={phaseVal}
@@ -130,7 +130,7 @@ export default function AddCostModal({
                   className={`py-2 px-1 rounded-lg text-[10px] font-bold text-center transition-all cursor-pointer ${
                     newEntry.phase === phaseVal
                       ? "bg-slate-950 text-white dark:bg-slate-800 dark:text-emerald-400 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-250 bg-transparent"
+                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-transparent"
                   }`}
                 >
                   {phaseVal === "Construction" ? "Construction (CAPEX)" : phaseVal === "Operational" ? "Operational" : phaseVal === "Maintenance" ? "Maintenance" : "End-of-Life"}

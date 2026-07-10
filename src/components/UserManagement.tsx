@@ -65,7 +65,7 @@ export default function UserManagement({ currentUser, triggerToast }: UserManage
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
     };
 
-    const defaultPwd = formData.password || "defaultPass123";
+    const defaultPwd = formData.password || "ChangeMe123!";
     hashPassword(defaultPwd).then(passwordHash => {
       const newUser: StoredUser = {
         id: `user-${Date.now()}`,

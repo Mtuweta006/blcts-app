@@ -1,33 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Search,
-  Plus,
-  Trash2,
-  Edit,
-  X,
-  Building2,
-  Tag,
-  FileSpreadsheet,
-  AlertCircle,
-  Star,
-  Truck,
-  CreditCard,
-  ShieldCheck,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  TrendingUp,
-  Leaf,
-  Clock,
-  Package,
-  Users,
-  Award,
-  Briefcase,
-  ChevronDown,
-  ChevronUp,
-  Upload,
-} from "lucide-react";
+import { Search, Plus, Trash2, CreditCard as Edit, X, Building2, Tag, FileSpreadsheet, CircleAlert as AlertCircle, Star, Truck, CreditCard, ShieldCheck, Mail, Phone, MapPin, Calendar, TrendingUp, Leaf, Clock, Package, Users, Award, Briefcase, ChevronDown, ChevronUp, Upload } from "lucide-react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -290,10 +262,7 @@ export default function VendorCenter({ vendors, materials, triggerToast }: Vendo
     }
   };
 
-  const handleBulkImport = () => {
-    triggerToast("CSV bulk import — upload your materials spreadsheet to populate the database.", "info");
-  };
-
+  
   // ---- Render helpers ----
   const renderStars = (rating: number) => {
     const full = Math.floor(rating);
@@ -723,13 +692,6 @@ export default function VendorCenter({ vendors, materials, triggerToast }: Vendo
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={handleBulkImport}
-                className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                CSV Import
-              </button>
               <button
                 onClick={openAddMaterial}
                 className="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-sm transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"

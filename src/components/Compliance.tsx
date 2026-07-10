@@ -1,24 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  ShieldCheck,
-  Plus,
-  X,
-  Filter,
-  Search,
-  Calendar,
-  Building2,
-  Flame,
-  HardHat,
-  Leaf,
-  HardDrive,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  FileText,
-  Scale,
-  Activity,
-} from "lucide-react";
+import { ShieldCheck, Plus, X, ListFilter as Filter, Search, Calendar, Building2, Flame, HardHat, Leaf, HardDrive, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle2, Circle as XCircle, Clock, FileText, Scale, Activity } from "lucide-react";
 import {
   ResponsiveContainer,
   PieChart,
@@ -159,8 +140,7 @@ export default function Compliance({
         }
       }
     } catch (err) {
-      console.error("Failed to load persisted compliance records:", err);
-    }
+          }
   }, []);
 
   // Persist local records to localStorage whenever they change
@@ -168,8 +148,7 @@ export default function Compliance({
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(localRecords));
     } catch (err) {
-      console.error("Failed to persist compliance records:", err);
-    }
+          }
   }, [localRecords]);
 
   // Merge prop records with locally-persisted records (props take precedence by id)

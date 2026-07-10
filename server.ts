@@ -390,16 +390,10 @@ async function startServer() {
 
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        // Safe, beautiful fallback if Gemini API key is not set in Settings
-        return res.json({
-          estimatedFloorArea: 2800,
-          floors: 5,
-          buildingType: "Mixed-Use",
-          observations: [
-            "Extracted floor plan layout shows optimized column layouts compressing structural steel rebar usage.",
-            "Elevations depict a pitched roof truss structure suited for localized rainwater harvesting systems.",
-            "Water reticulation layout maps efficient wet-room groupings adjacent to main utility service ducts."
-          ]
+        return res.status(503).json({
+          success: false,
+          error: "AI_ANALYSIS_UNAVAILABLE",
+          message: "Blueprint analysis could not be completed because the AI service is not configured. Please contact your Administrator to enable AI blueprint analysis, or enter the project specifications manually."
         });
       }
 
@@ -412,7 +406,7 @@ Estimate or extract the following structural and design parameters:
 1. Estimated floor area in Square Meters (SQM). Estimate a realistic figure based on the plans (usually between 100 and 15000 SQM).
 2. Estimated number of floors/levels (usually between 1 and 30).
 3. Primary building type (Residential, Commercial, Mixed-Use, Industrial).
-4. Actonable construction and materials lifecycle observations (minimum 3 professional observations) detailing structural efficiency, roofing types, or potential damp-proofing/waterproofing issues.
+4. Actionable construction and materials lifecycle observations (minimum 3 professional observations) detailing structural efficiency, roofing types, or potential damp-proofing/waterproofing issues.
 
 Return strictly as a JSON object matching the requested schema.`;
 
@@ -455,17 +449,10 @@ Return strictly as a JSON object matching the requested schema.`;
       res.json(planAnalysis);
 
     } catch (err: any) {
-      console.error("Express Plan Analysis Error:", err);
-      // Return beautiful default fallback if service fails
-      res.json({
-        estimatedFloorArea: 3200,
-        floors: 6,
-        buildingType: "Commercial",
-        observations: [
-          "Uniform grid configuration detected in architectural plan suitable for high-strength concrete columns.",
-          "Substructure denotes high load-bearing capacity requiring minimal localized piling.",
-          "Window layouts and orientation permit maximum natural daylighting, reducing future utility OPEX."
-        ]
+      return res.status(503).json({
+        success: false,
+        error: "AI_ANALYSIS_ERROR",
+        message: "Blueprint analysis could not be completed due to a processing error. Please try again or enter specifications manually."
       });
     }
   });
@@ -679,8 +666,7 @@ The total sum of these 10 categories should align closely with the expected cons
       res.json(parsedJson);
 
     } catch (err: any) {
-      console.error("Express Cost Estimation Error:", err);
-      res.status(500).json({ error: "Could not generate cost estimate." });
+            res.status(500).json({ error: "Could not generate cost estimate." });
     }
   });
 
@@ -695,12 +681,13 @@ The total sum of these 10 categories should align closely with the expected cons
 
       const getFallbackForecast = () => {
         const costVal = property.capexBudget || 100000000;
-        const progressBase = property.id === "prop-1" ? 68 : property.id === "prop-2" ? 42 : 100;
         
         // Apply modifiers to base speed
         let speedMult = workforceModifier;
         if (supplyChainStatus === "Bottlenecked") speedMult *= 0.65;
         if (supplyChainStatus === "Accelerated") speedMult *= 1.25;
+
+        const progressBase = Math.min(100, Math.max(0, Math.round((property.capexBudget ? 50 : 0) * speedMult)));
 
         const aiCompletionProgress = Math.min(100, Math.max(0, Math.round(progressBase * (speedMult > 1 ? 1 + (speedMult - 1) * 0.15 : speedMult))));
         const factorCompleteness = (100 - aiCompletionProgress) / 100;
@@ -784,7 +771,7 @@ The total sum of these 10 categories should align closely with the expected cons
         const msMilestones = [
           { milestoneName: "Substructure & Excavations", standardProgressPercent: 15, estimatedDate: "2025-04-10", status: aiCompletionProgress > 15 ? "Completed" : "In-Progress" },
           { milestoneName: "Superstructure Hollow Frame Post Concreting", standardProgressPercent: 45, estimatedDate: "2025-10-15", status: aiCompletionProgress > 45 ? "Completed" : aiCompletionProgress > 15 ? "In-Progress" : "Scheduled" },
-          { milestoneName: "Zoning & Brickwork Masonry Masonry Work", standardProgressPercent: 65, estimatedDate: "2026-03-05", status: aiCompletionProgress > 65 ? "Completed" : aiCompletionProgress > 45 ? "In-Progress" : "Scheduled" },
+          { milestoneName: "Zoning & Brickwork Masonry Work", standardProgressPercent: 65, estimatedDate: "2026-03-05", status: aiCompletionProgress > 65 ? "Completed" : aiCompletionProgress > 45 ? "In-Progress" : "Scheduled" },
           { milestoneName: "Glazing Glass, MEP Inlets, and Electrical Wiring", standardProgressPercent: 85, estimatedDate: "2026-08-20", status: aiCompletionProgress > 85 ? "Completed" : aiCompletionProgress > 65 ? "In-Progress" : "Scheduled" },
           { milestoneName: "Interior Plaster, Paint Assemblies, & Testing", standardProgressPercent: 100, estimatedDate: adjustedDate.toISOString().substring(0, 10), status: aiCompletionProgress === 100 ? "Completed" : aiCompletionProgress > 85 ? "In-Progress" : "Scheduled" }
         ];
@@ -922,8 +909,7 @@ Ensure the returned compliance structure strictly adheres to the requested JSON 
       res.json(parsedJson);
 
     } catch (err: any) {
-      console.error("Express Construction Forecasting Error:", err);
-      res.status(500).json({ error: "Could not generate forecast through Gemini or fallback engines." });
+            res.status(500).json({ error: "Could not generate forecast through Gemini or fallback engines." });
     }
   });
 
@@ -943,8 +929,7 @@ Ensure the returned compliance structure strictly adheres to the requested JSON 
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[BLCTS PORTAL] Secure Express+Vite Gateway listening active on http://0.0.0.0:${PORT}`);
-  });
+      });
 }
 
 startServer();

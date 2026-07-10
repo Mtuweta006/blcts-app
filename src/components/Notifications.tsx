@@ -1,20 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Bell,
-  Wrench,
-  Coins,
-  FileText,
-  Shield,
-  Sparkles,
-  ShieldCheck,
-  AlertTriangle,
-  CheckCheck,
-  Check,
-  Filter,
-  Search,
-  Clock,
-  Inbox,
-} from "lucide-react";
+import { Bell, Wrench, Coins, FileText, Shield, Sparkles, ShieldCheck, TriangleAlert as AlertTriangle, CheckCheck, Check, ListFilter as Filter, Search, Clock, Inbox } from "lucide-react";
 import { AppNotification } from "../types";
 
 interface NotificationsProps {
@@ -169,8 +154,7 @@ export default function Notifications({
         }
       }
     } catch (err) {
-      console.error("Failed to load persisted notification read state:", err);
-    }
+          }
   }, []);
 
   // Persist read state to localStorage whenever it changes
@@ -178,8 +162,7 @@ export default function Notifications({
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(readState));
     } catch (err) {
-      console.error("Failed to persist notification read state:", err);
-    }
+          }
   }, [readState]);
 
   // Resolve effective read status: persisted state overrides prop isRead

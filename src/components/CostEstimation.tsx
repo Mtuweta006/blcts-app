@@ -40,11 +40,11 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
   // Loading steps
   const [loadingStep, setLoadingStep] = useState(0);
   const loadingSteps = [
-    "Uploading architectural drawing...",
-    "Reading drawing...",
-    "Extracting project information...",
-    "Comparing with material database...",
-    "Preparing cost estimation..."
+    "Validating project parameters...",
+    "Querying regional material database...",
+    "Applying regional pricing factors...",
+    "Calculating labour and service costs...",
+    "Applying safety margin and compiling estimate..."
   ];
 
   // Synced initial setup
@@ -153,8 +153,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
         triggerToast(`AI Cost Estimate compiled for ${county} with KSh ${safetyMargin} safety margin!`, "success");
       }
     } catch (err) {
-      console.error("AI Estimation Error:", err);
-      if (triggerToast) {
+            if (triggerToast) {
         triggerToast("Server connection error. Running regional pricing fallback.", "warning");
       }
       calculateLocalFallback(area, county);
@@ -428,7 +427,16 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs">
-                    {breakdown.map((item, idx) => (
+                    {breakdown.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center">
+                          <div className="flex flex-col items-center gap-2">
+                            <Cpu className="w-8 h-8 text-slate-300 dark:text-slate-700" />
+                            <p className="text-xs text-slate-400">No cost breakdown available. Generate an estimate to view the breakdown.</p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : breakdown.map((item, idx) => (
                       <tr key={idx} className="hover:bg-slate-50/40 dark:hover:bg-slate-800/10 transition-colors align-top">
                         <td className="py-3.5 px-4">
                           <span className="font-semibold text-slate-800 dark:text-slate-200 block">{item.component}</span>
@@ -540,7 +548,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
                   <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">✓ Floors</span>
                   <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">✓ {selectedCounty} Prices</span>
                   <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">✓ Safety Margin</span>
-                  <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">✓ AI Quantities</span>
+                  <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">✓ Component Quantities</span>
                   <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1">✓ Lifecycle Model</span>
                 </div>
               </div>

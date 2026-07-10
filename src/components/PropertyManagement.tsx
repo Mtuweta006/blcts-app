@@ -50,11 +50,11 @@ export default function PropertyManagement({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(0);
   const analysisSteps = [
-    "Uploading architectural drawing...",
-    "Reading drawing...",
-    "Extracting project information...",
-    "Comparing with material database...",
-    "Preparing cost estimation..."
+    "Validating uploaded file...",
+    "Sending blueprint to AI analysis engine...",
+    "Analyzing document contents...",
+    "Extracting structural specifications...",
+    "Compiling analysis report..."
   ];
 
   useEffect(() => {
@@ -80,6 +80,7 @@ export default function PropertyManagement({
   const [editArea, setEditArea] = useState<number>(0);
   const [editFloors, setEditFloors] = useState<number>(0);
   const [editType, setEditType] = useState<string>("Commercial");
+  const [uploadedFileName, setUploadedFileName] = useState<string>("");
 
   // Reset analysis when active project changes
   useEffect(() => {
@@ -238,6 +239,7 @@ export default function PropertyManagement({
 
     setIsAnalyzing(true);
     setAnalyzedResult(null);
+    setUploadedFileName(file.name);
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -266,8 +268,7 @@ export default function PropertyManagement({
         setAnalyzedResult(data);
         triggerToast("AI survey completed! Review and confirm the plan metrics below.", "success");
       } catch (err) {
-        console.error("Plan Analysis Error:", err);
-        triggerToast("Could not analyze the uploaded plan. Please enter specifications manually below.", "warning");
+                triggerToast("Could not analyze the uploaded plan. Please enter specifications manually below.", "warning");
         setAnalyzedResult({
           estimatedFloorArea: 0,
           floors: 1,
@@ -291,6 +292,14 @@ export default function PropertyManagement({
 
     const area = Number(editArea);
     const floorsNum = Number(editFloors);
+    if (isNaN(area) || area <= 0) {
+      triggerToast("Please enter a valid floor area greater than zero.", "warning");
+      return;
+    }
+    if (isNaN(floorsNum) || floorsNum < 1) {
+      triggerToast("Please enter at least 1 floor.", "warning");
+      return;
+    }
     
     // Recalculate construction budget based on dynamic specs (e.g. KSh 14,000 per SQM per floor)
     const costFactor = Math.round(area * floorsNum * 13500);
@@ -304,13 +313,13 @@ export default function PropertyManagement({
       initialConstructionCost: costFactor,
       materialCost: Math.round(costFactor * 0.55),
       labourCost: Math.round(costFactor * 0.25),
-      blueprintUrl: "Blueprint_Active_Release.pdf",
+      blueprintUrl: uploadedFileName || "blueprint.pdf",
       observations: analyzedResult?.observations || [],
       healthStatusText: "Plan Analyzed" 
     } : p));
 
     setAnalyzedResult(null);
-    triggerToast("Project specs synchronized! AI Cost Estimate is ready on the Cost Estimation tab.", "success");
+    triggerToast("Project specs synchronized. Visit the Cost Estimation tab to generate a detailed estimate.", "success");
   };
 
   const triggerFileInput = () => {
@@ -452,7 +461,7 @@ export default function PropertyManagement({
                       {analysisSteps[analysisStep]}
                     </h4>
                     <p className="text-[10px] text-slate-400 mt-1 max-w-xs leading-relaxed mx-auto font-light">
-                      Analyzing plan dimensions, verifying layout, and matching elements with structural templates.
+                      Analyzing document contents and extracting building specifications.
                     </p>
                   </div>
                   
@@ -490,18 +499,20 @@ export default function PropertyManagement({
                       <div>
                         <span className="text-[10px] text-slate-400 font-medium">Confidence Level</span>
                         <span className="font-bold text-emerald-600 dark:text-emerald-400 block flex items-center gap-1">
-                          <Check className="w-3.5 h-3.5" /> Analysis Complete
+                          <Check className="w-3.5 h-3.5" /> Analysis Done
                         </span>
                       </div>
                     </div>
 
                     <div className="space-y-1.5 pt-1">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Detected Construction Elements:</span>
-                      <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold text-slate-700 dark:text-slate-300">
-                        <span className="flex items-center gap-1">✓ Concrete Structure</span>
-                        <span className="flex items-center gap-1">✓ Reinforcement Steel</span>
-                        <span className="flex items-center gap-1">✓ Masonry Walls</span>
-                        <span className="flex items-center gap-1">✓ Roofing System</span>
+                      <div className="grid grid-cols-1 gap-1.5 text-[10px] font-semibold text-slate-700 dark:text-slate-300">
+                        {(analyzedResult?.observations || []).map((obs, i) => (
+                          <span key={i} className="flex items-center gap-1">✓ {obs}</span>
+                        ))}
+                        {(!analyzedResult?.observations || analyzedResult.observations.length === 0) && (
+                          <span className="text-slate-400 italic">No structural elements detected. Enter specifications manually below.</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -582,7 +593,7 @@ export default function PropertyManagement({
                         <FileCheck2 className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">Blueprint_Active_Release.pdf</span>
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">{selectedProperty.blueprintUrl}</span>
                         <span className="text-[10px] text-slate-400 block">Analysis Verified • Ready for cost forecasting</span>
                       </div>
                     </div>
@@ -596,10 +607,9 @@ export default function PropertyManagement({
                   </div>
                   
                   {/* Visual Blueprint Vector Mock */}
-                  <div className="bg-[#f0f4f8] dark:bg-slate-950 h-32 rounded-lg border border-dashed border-slate-300 dark:border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:14px_24px]"></div>
-                    <FileText className="w-8 h-8 text-slate-400 relative z-10 animate-pulse" />
-                    <span className="text-[10px] text-slate-500 font-mono relative z-10 mt-1">AI Structural Survey Active</span>
+                  <div className="bg-slate-50 dark:bg-slate-950 h-24 rounded-lg border border-dashed border-slate-300 dark:border-slate-800 flex flex-col items-center justify-center">
+                    <FileText className="w-6 h-6 text-slate-400" />
+                    <span className="text-[10px] text-slate-500 mt-1">Blueprint on file — analysis results available above</span>
                   </div>
                 </div>
               ) : (
@@ -627,7 +637,7 @@ export default function PropertyManagement({
                     Upload Architectural blueprint
                   </span>
                   <span className="text-[10px] text-slate-400 mt-1 max-w-xs block font-light mx-auto">
-                    Drag and drop your layout in PDF, JPG or PNG format. Our vision engine will automatically extract building layers and structural boundaries.
+                    Drag and drop your layout in PDF, JPG or PNG format. Upload a blueprint PDF or image for AI-assisted analysis. The system will attempt to extract building specifications from the document.
                   </span>
                 </div>
               )}
@@ -705,7 +715,7 @@ export default function PropertyManagement({
                     <div className="flex gap-2.5 items-start">
                       <span className="px-1.5 py-0.5 text-[9px] font-mono font-black rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">EXTRACTED</span>
                       <div className="text-xs text-slate-600 dark:text-slate-300 font-light leading-relaxed space-y-2">
-                        <p className="font-bold text-slate-800 dark:text-slate-200">The quantity surveying engine has cataloged the following observations from this plan:</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-200">The AI analysis identified the following observations from this plan:</p>
                         <ul className="list-disc pl-4 space-y-1">
                           {selectedProperty.observations.map((obs, index) => (
                             <li key={index}>{obs}</li>
