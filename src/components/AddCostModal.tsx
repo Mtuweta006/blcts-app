@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Coins, X, TriangleAlert as AlertTriangle, Search, ChevronRight } from "lucide-react";
+import { Coins, X, TriangleAlert as AlertTriangle, Search } from "lucide-react";
 import { LifecyclePhase } from "../types";
 
 interface AddCostModalProps {

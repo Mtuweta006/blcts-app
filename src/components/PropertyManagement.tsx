@@ -415,7 +415,7 @@ export default function PropertyManagement({
                   </h3>
                 </div>
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                  Area: {selectedProperty.estimatedFloorArea || 2500} sq. ft
+                  Area: {selectedProperty.estimatedFloorArea || 2500} sq. m
                 </span>
               </div>
 

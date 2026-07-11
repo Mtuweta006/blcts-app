@@ -15,7 +15,7 @@ import {
   Sparkles,
   Crown
 } from "lucide-react";
-import { User } from "../types";
+import { User, UserRole } from "../types";
 import { motion, AnimatePresence } from "motion/react";
 
 interface AuthScreenProps {
@@ -77,7 +77,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
         role: "Administrator",
         organization: "Wandera Investments Ltd",
         phone: "+254 712 345 678",
-        passwordHash: "4b971cafd7903d148bda8f8aa7faa57b769cded513ecb31e124d1e010a80555f" // SHA-256 of "adminPass123"
+        passwordHash: "4b971cafd7903d148bda8f8aa7faa57b769cded513ecb31e124d1e010a80555f"
       },
       {
         id: "user-manager",
@@ -86,7 +86,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
         role: "Facility Manager",
         organization: "Thika Block Management",
         phone: "+254 722 987 654",
-        passwordHash: "276cbf1e0dd8b5d1bd515780206dfbf0257d379494feefee8503f2d85e9a7c2a" // SHA-256 of "managerPass99"
+        passwordHash: "276cbf1e0dd8b5d1bd515780206dfbf0257d379494feefee8503f2d85e9a7c2a"
       },
       {
         id: "user-owner",
@@ -95,16 +95,16 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
         role: "Building Owner",
         organization: "Mohamed Development Group",
         phone: "+254 733 123 456",
-        passwordHash: "29cf5c7634755973d2646d902a6a46ffd64d5cc3d3d91096d80811a2beee7b15" // SHA-256 of "ownerPass77"
+        passwordHash: "29cf5c7634755973d2646d902a6a46ffd64d5cc3d3d91096d80811a2beee7b15"
       },
       {
         id: "user-engineer",
         email: "lead.engineer@davis-shirtliff.co.ke",
         name: "Jane Atieno",
-        role: "Maintenance Engineer",
+        role: "Facility Manager",
         organization: "Davis & Shirtliff Tech",
         phone: "+254 733 445 566",
-        passwordHash: "02f0cdcbe300c5a93067cecb66b1aa7a78834a5af425c02f73b636f7745433fc" // SHA-256 of "engineerPass22"
+        passwordHash: "02f0cdcbe300c5a93067cecb66b1aa7a78834a5af425c02f73b636f7745433fc"
       }
     ];
     const stored = localStorage.getItem("blcts-users");
@@ -266,7 +266,7 @@ export default function AuthScreen({ onLoginSuccess, isDarkMode }: AuthScreenPro
         id: newRegisteredUser.id,
         name: newRegisteredUser.name,
         email: newRegisteredUser.email,
-        role: newRegisteredUser.role as any,
+        role: newRegisteredUser.role as UserRole,
         organization: newRegisteredUser.organization,
         phone: newRegisteredUser.phone
       };

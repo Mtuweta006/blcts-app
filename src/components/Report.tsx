@@ -25,6 +25,9 @@ import {
   Asset,
 } from "../types";
 
+const escapeHtml = (str: string): string =>
+  String(str ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
 interface ReportsProps {
   selectedProperty: Property;
   costEntries: CostEntry[];
@@ -404,49 +407,49 @@ export default function Report({
       const phaseRows = phaseBreakdown
         .map(
           (p) =>
-            `<tr><td>${p.name}</td><td style="text-align:right">${formatKShFull(p.value)}</td></tr>`,
+            `<tr><td>${escapeHtml(p.name)}</td><td style="text-align:right">${formatKShFull(p.value)}</td></tr>`,
         )
         .join("");
 
       const assetRows = (assets.length ? assets : [])
         .map(
           (a) =>
-            `<tr><td>${a.name}</td><td>${a.category}</td><td>${a.currentCondition}</td><td style="text-align:right">${formatKShFull(a.replacementCost)}</td><td style="text-align:right">${a.remainingUsefulLife ?? "N/A"}</td></tr>`,
+            `<tr><td>${escapeHtml(a.name)}</td><td>${escapeHtml(a.category)}</td><td>${escapeHtml(a.currentCondition)}</td><td style="text-align:right">${formatKShFull(a.replacementCost)}</td><td style="text-align:right">${a.remainingUsefulLife ?? "N/A"}</td></tr>`,
         )
         .join("");
 
       const maintRows = maintenanceTasks
         .map(
           (t) =>
-            `<tr><td>${t.component}</td><td>${t.status}</td><td>${t.targetDate}</td><td style="text-align:right">${formatKShFull(t.estimatedCost)}</td></tr>`,
+            `<tr><td>${escapeHtml(t.component)}</td><td>${escapeHtml(t.status)}</td><td>${escapeHtml(t.targetDate)}</td><td style="text-align:right">${formatKShFull(t.estimatedCost)}</td></tr>`,
         )
         .join("");
 
       const predRows = predictions
         .map(
           (p) =>
-            `<tr><td>${p.category}</td><td>${p.prediction}</td><td style="text-align:right">${formatKShFull(p.predictedValue)}</td><td>${p.confidenceScore}%</td><td>${p.riskLevel}</td><td>${p.timeframe}</td></tr>`,
+            `<tr><td>${escapeHtml(p.category)}</td><td>${escapeHtml(p.prediction)}</td><td style="text-align:right">${formatKShFull(p.predictedValue)}</td><td>${p.confidenceScore}%</td><td>${escapeHtml(p.riskLevel)}</td><td>${escapeHtml(p.timeframe)}</td></tr>`,
         )
         .join("");
 
       const anomalyRows = anomalies
         .map(
           (a) =>
-            `<tr><td>${a.category}</td><td>${a.description}</td><td>${a.severity}</td><td style="text-align:right">${a.deviationPercent}%</td><td>${a.recommendation}</td></tr>`,
+            `<tr><td>${escapeHtml(a.category)}</td><td>${escapeHtml(a.description)}</td><td>${escapeHtml(a.severity)}</td><td style="text-align:right">${a.deviationPercent}%</td><td>${escapeHtml(a.recommendation)}</td></tr>`,
         )
         .join("");
 
       const complianceRows = compliance
         .map(
           (c) =>
-            `<tr><td>${c.regulation}</td><td>${c.category}</td><td>${c.status}</td><td>${c.nextInspectionDate}</td><td>${c.authority}</td></tr>`,
+            `<tr><td>${escapeHtml(c.regulation)}</td><td>${escapeHtml(c.category)}</td><td>${escapeHtml(c.status)}</td><td>${escapeHtml(c.nextInspectionDate)}</td><td>${escapeHtml(c.authority)}</td></tr>`,
         )
         .join("");
 
       const riskRows = riskItems
         .map(
           (r) =>
-            `<tr><td>${r.category}</td><td>${r.description}</td><td>${r.severity}</td><td>${r.source}</td><td>${r.mitigation}</td></tr>`,
+            `<tr><td>${escapeHtml(r.category)}</td><td>${escapeHtml(r.description)}</td><td>${escapeHtml(r.severity)}</td><td>${escapeHtml(r.source)}</td><td>${escapeHtml(r.mitigation)}</td></tr>`,
         )
         .join("");
 
@@ -454,7 +457,7 @@ export default function Report({
 <html>
 <head>
 <meta charset="utf-8" />
-<title>BLCTS Report — ${selectedProperty.name}</title>
+<title>BLCTS Report — ${escapeHtml(selectedProperty.name)}</title>
 <style>
   * { box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #0f172a; margin: 32px; }
@@ -477,8 +480,8 @@ export default function Report({
 </head>
 <body>
   <h1>Building Lifecycle Cost Tracking System</h1>
-  <div class="sub"><strong>${selectedProperty.name}</strong> — ${selectedProperty.location} (${selectedProperty.type})</div>
-  <div class="meta">Generated ${new Date().toLocaleString()} • Health: ${selectedProperty.healthGrade} (${selectedProperty.healthStatusText})</div>
+  <div class="sub"><strong>${escapeHtml(selectedProperty.name)}</strong> — ${escapeHtml(selectedProperty.location)} (${escapeHtml(selectedProperty.type)})</div>
+  <div class="meta">Generated ${new Date().toLocaleString()} • Health: ${escapeHtml(selectedProperty.healthGrade)} (${escapeHtml(selectedProperty.healthStatusText)})</div>
 
   <h2>Executive Summary</h2>
   <div class="kpis">
@@ -487,7 +490,7 @@ export default function Report({
     <div class="kpi"><div class="label">TCO</div><div class="value">${formatKShFull(calculations.tco)}</div></div>
     <div class="kpi"><div class="label">Budget Utilization</div><div class="value">${budgetUtilization}%</div></div>
   </div>
-  <p class="sub">${selectedProperty.description || "No description available."}</p>
+  <p class="sub">${escapeHtml(selectedProperty.description || "No description available.")}</p>
 
   <h2>Financial Analysis — Cost by Phase</h2>
   <table><thead><tr><th>Phase</th><th style="text-align:right">Amount</th></tr></thead><tbody>${phaseRows || '<tr><td colspan="2">No data</td></tr>'}</tbody></table>

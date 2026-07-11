@@ -181,7 +181,7 @@ function ensureDatabase() {
       role: "Administrator",
       organization: "Wandera Investments Ltd",
       phone: "+254 712 345 678",
-      passwordHash: "54b79259254eaed6593410bd63c089de0d797d2b4f020683060a21bbad6da5ed" // hash of "executivePass123"
+      passwordHash: "54b79259254eaed6593410bd63c089de0d797d2b4f020683060a21bbad6da5ed"
     },
     {
       id: "user-manager",
@@ -190,7 +190,7 @@ function ensureDatabase() {
       role: "Facility Manager",
       organization: "Thika Block Management",
       phone: "+254 722 987 654",
-      passwordHash: "276cbf1e0dd8b5d1bd515780206dfbf0257d379494feefee8503f2d85e9a7c2a" // hash of "managerPass99"
+      passwordHash: "276cbf1e0dd8b5d1bd515780206dfbf0257d379494feefee8503f2d85e9a7c2a"
     }
   ];
 
@@ -354,6 +354,9 @@ async function startServer() {
       return res.status(400).json({ error: "Required fields missing for user secure enrollment" });
     }
 
+    const allowedSelfRegisterRoles = ["Building Owner", "Facility Manager"];
+    const assignedRole = allowedSelfRegisterRoles.includes(role) ? role : "Building Owner";
+
     const users = readJSON(USERS_FILE);
     const exists = users.some((u: any) => u.email.toLowerCase().trim() === email.toLowerCase().trim());
     if (exists) {
@@ -364,7 +367,7 @@ async function startServer() {
       id: `user-${Date.now()}`,
       email: email.toLowerCase().trim(),
       name,
-      role,
+      role: assignedRole,
       organization: organization || "General Real Estate Developer",
       phone: phone || "",
       passwordHash
