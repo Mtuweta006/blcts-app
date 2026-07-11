@@ -50,6 +50,8 @@ export interface Property {
   insuranceExpiry?: string;
   owner?: string;
   developer?: string;
+  assignedTo?: string;
+  constructionStandard?: "Economy" | "Standard" | "Premium" | "Luxury";
 }
 
 export type LifecyclePhase = "Construction" | "Operational" | "Maintenance" | "End-of-Life";
@@ -66,15 +68,47 @@ export interface CostEntry {
   description: string;
 }
 
+export type MaintenanceStatus =
+  | "Pending"
+  | "Assigned"
+  | "In-Progress"
+  | "Completed"
+  | "Verified"
+  | "Overdue";
+
+export type MaintenancePriority = "Low" | "Medium" | "High" | "Critical";
+
+export type MaintenanceCategory =
+  | "Preventive"
+  | "Corrective"
+  | "Predictive"
+  | "Emergency"
+  | "Inspection";
+
 export interface MaintenanceTask {
   id: string;
   propertyId: string;
+  title: string;
+  description: string;
   component: string;
-  status: "Scheduled" | "In-Progress" | "Completed" | "Paid" | "Overdue";
+  category: MaintenanceCategory;
+  priority: MaintenancePriority;
+  status: MaintenanceStatus;
+  assignedTo: string;
+  technician: string;
+  vendor: string;
+  estimatedCost: number;
+  actualCost: number;
   targetDate: string;
-  contractor: string;
-  amount: number;
+  completedDate?: string;
+  verifiedBy?: string;
   phone?: string;
+  notes: string;
+  partsUsed?: string;
+  labourHours?: number;
+  downtime?: number;
+  attachments: string[];
+  workOrderNumber?: string;
 }
 
 export interface ChartDataPoint {
@@ -93,18 +127,7 @@ export interface AIInsight {
   recommendedAction: string;
 }
 
-export type UserRole =
-  | "Administrator"
-  | "Super Admin"
-  | "Property Manager"
-  | "Finance Officer"
-  | "Maintenance Officer"
-  | "Vendor"
-  | "Auditor"
-  | "Executive"
-  | "Facility Manager"
-  | "Maintenance Engineer"
-  | "Building Owner";
+export type UserRole = "Administrator" | "Facility Manager" | "Building Owner";
 
 export interface User {
   id: string;
@@ -114,6 +137,7 @@ export interface User {
   organization?: string;
   phone?: string;
   scopeProperties?: string[];
+  assignedPropertyIds?: string[];
 }
 
 export interface Asset {
@@ -130,23 +154,6 @@ export interface Asset {
   replacementCost: number;
   remainingUsefulLife?: number;
   maintenanceHistory?: { date: string; description: string; cost: number }[];
-}
-
-export interface MaintenanceRecord {
-  id: string;
-  propertyId: string;
-  assetId?: string;
-  type: "Preventive" | "Corrective" | "Predictive" | "Emergency";
-  cost: number;
-  vendor: string;
-  date: string;
-  status: "Scheduled" | "In-Progress" | "Completed" | "Overdue";
-  notes: string;
-  technician?: string;
-  downtime?: number;
-  partsUsed?: string;
-  labourHours?: number;
-  attachments: string[];
 }
 
 export interface UploadedDocument {
@@ -253,6 +260,8 @@ export interface AIPrediction {
   recommendation: string;
   supportingData: string;
   timeframe: string;
+  assumptions: string[];
+  limitations: string[];
 }
 
 export interface Anomaly {
@@ -336,20 +345,18 @@ export interface SystemSettings {
   auditLogs: AuditLog[];
 }
 
-export const ADMIN_ROLES: UserRole[] = ["Administrator", "Super Admin", "Executive", "Finance Officer", "Auditor"];
-
-export const FM_ROLES: UserRole[] = ["Facility Manager", "Maintenance Engineer", "Property Manager"];
-
+export const ADMIN_ROLES: UserRole[] = ["Administrator"];
+export const FM_ROLES: UserRole[] = ["Facility Manager"];
 export const OWNER_ROLES: UserRole[] = ["Building Owner"];
 
 export function isAdminRole(role: string): boolean {
-  return ADMIN_ROLES.includes(role as UserRole);
+  return role === "Administrator";
 }
 
 export function isFacilityManagerRole(role: string): boolean {
-  return FM_ROLES.includes(role as UserRole);
+  return role === "Facility Manager";
 }
 
 export function isOwnerRole(role: string): boolean {
-  return OWNER_ROLES.includes(role as UserRole);
+  return role === "Building Owner";
 }

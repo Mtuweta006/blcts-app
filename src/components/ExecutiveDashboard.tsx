@@ -44,7 +44,8 @@ export default function ExecutiveDashboard({
   compliance = [],
   sustainability = [],
   predictions = [],
-  anomalies = []
+  anomalies = [],
+  maintTasksList = []
 }: ExecutiveDashboardProps) {
 
   const formatKSh = (value: any): string => {
@@ -97,10 +98,19 @@ export default function ExecutiveDashboard({
     { name: "Finishes", value: (selectedProperty.initialConstructionCost || 0) * 0.10, color: "#06b6d4" },
   ];
 
-  const maintenanceFreqData = [
-    { month: "Jan", count: 2 }, { month: "Feb", count: 1 }, { month: "Mar", count: 3 },
-    { month: "Apr", count: 2 }, { month: "May", count: 4 }, { month: "Jun", count: 2 }
-  ];
+  const maintenanceFreqData = React.useMemo(() => {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const counts: Record<string, number> = {};
+    monthNames.forEach(m => counts[m] = 0);
+    (maintTasksList || []).forEach(t => {
+      const d = new Date(t.targetDate);
+      if (!isNaN(d.getTime())) {
+        const m = monthNames[d.getMonth()];
+        if (m) counts[m]++;
+      }
+    });
+    return monthNames.slice(0, 6).map(m => ({ month: m, count: counts[m] }));
+  }, [maintTasksList]);
 
   const energyData = propSustainability.map(m => ({ month: m.month, kwh: m.electricityKwh, renewable: m.renewableEnergyKwh }));
   const waterData = propSustainability.map(m => ({ month: m.month, litres: m.waterLitres }));

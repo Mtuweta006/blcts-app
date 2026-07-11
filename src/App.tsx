@@ -13,7 +13,6 @@ import {
   initialVendors,
   initialMaterials,
   initialAssets,
-  initialMaintenanceRecords,
   initialCompliance,
   initialSustainability,
   initialPredictions,
@@ -23,7 +22,7 @@ import {
   getFinancialTrends,
   getAIInsights
 } from "./data";
-import { Property, CostEntry, MaintenanceTask, LifecyclePhase, User, Vendor, Material, Asset, MaintenanceRecord, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification, SystemSettings, AuditLog, isAdminRole, isFacilityManagerRole, isOwnerRole } from "./types";
+import { Property, CostEntry, MaintenanceTask, LifecyclePhase, User, Vendor, Material, Asset, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification, SystemSettings, AuditLog, isAdminRole, isFacilityManagerRole, isOwnerRole } from "./types";
 
 // Import modular sub-components for "Professional Polish" theme and chunked optimization
 import Sidebar from "./components/Sidebar";
@@ -102,7 +101,6 @@ export default function App() {
   const [vendors] = useState<Vendor[]>(initialVendors);
   const [materials] = useState<Material[]>(initialMaterials);
   const [assets] = useState<Asset[]>(initialAssets);
-  const [maintenanceRecords] = useState<MaintenanceRecord[]>(initialMaintenanceRecords);
   const [complianceItems] = useState<ComplianceItem[]>(initialCompliance);
   const [sustainabilityMetrics] = useState<SustainabilityMetric[]>(initialSustainability);
   const [predictions] = useState<AIPrediction[]>(initialPredictions);
@@ -294,8 +292,8 @@ export default function App() {
       .reduce((sum, item) => sum + item.amount, 0);
 
     const paidMaintenanceTotal = maintenanceTasks
-      .filter(t => t.propertyId === selectedPropertyId && t.status === "Paid")
-      .reduce((sum, item) => sum + item.amount, 0);
+      .filter(t => t.propertyId === selectedPropertyId && t.status === "Verified")
+      .reduce((sum, item) => sum + item.estimatedCost, 0);
 
     // Dynamic calculations
     const combinedOpex = opexTotal + paidMaintenanceTotal;
@@ -397,10 +395,10 @@ export default function App() {
     return maintenanceTasks.filter(task => {
       const matchProperty = task.propertyId === selectedPropertyId;
       const matchQuery = task.component.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          task.contractor.toLowerCase().includes(searchQuery.toLowerCase());
+                          task.vendor.toLowerCase().includes(searchQuery.toLowerCase());
       const matchPhase = phaseFilter === "All" || 
-                          (phaseFilter === "Paid" && task.status === "Paid") || 
-                          (phaseFilter === "Active" && task.status !== "Paid");
+                          (phaseFilter === "Verified" && task.status === "Verified") || 
+                          (phaseFilter === "Active" && task.status !== "Verified");
       return matchProperty && matchQuery && matchPhase;
     });
   }, [maintenanceTasks, selectedPropertyId, searchQuery, phaseFilter]);
@@ -441,7 +439,7 @@ export default function App() {
       amount: parsedAmount,
       date,
       contractor,
-      status: "Paid",
+      status: "Completed",
       description: description || "Manually logged cost entry"
     };
 
@@ -467,12 +465,25 @@ export default function App() {
       const newTask: MaintenanceTask = {
         id: `maint-user-${Date.now()}`,
         propertyId: selectedPropertyId,
+        title: component,
+        description: "",
         component,
+        category: "Corrective",
+        priority: "Medium",
         status: "Completed",
+        assignedTo: "",
+        technician: "",
+        vendor: contractor,
+        estimatedCost: parsedAmount,
+        actualCost: parsedAmount,
         targetDate: date,
-        contractor,
-        amount: parsedAmount,
-        phone: "254712345678"
+        completedDate: date,
+        notes: "",
+        partsUsed: "",
+        labourHours: 0,
+        downtime: 0,
+        attachments: [],
+        workOrderNumber: `WO-${Date.now().toString().slice(-6)}`
       };
       setMaintenanceTasks(prev => [newTask, ...prev]);
     }
@@ -828,10 +839,11 @@ export default function App() {
 
             {activeTab === "maintenance" && isTabAllowed("maintenance") && (
               <MaintenanceManagement
-                maintenanceRecords={maintenanceRecords}
+                maintenanceRecords={maintenanceTasks}
                 assets={assets}
                 selectedPropertyId={selectedPropertyId}
                 triggerToast={triggerToast}
+                currentUserRole={currentUser?.role}
               />
             )}
 

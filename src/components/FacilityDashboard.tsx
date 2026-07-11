@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { Property, MaintenanceTask, Asset, ComplianceItem, SustainabilityMetric, AIPrediction, Anomaly, AppNotification, User, ActiveTabType } from "../types";
 import { staggerContainer, fadeInUp, cardHover } from "../utils/animations";
 import CountUp from "./CountUp";
+import { WorkflowStepper } from "./WorkflowComponents";
 
 interface FacilityDashboardProps {
   selectedProperty: Property;
@@ -34,7 +35,7 @@ export default function FacilityDashboard({
   const propertyAnomalies = useMemo(() => anomalies.filter(a => a.propertyId === selectedPropertyId), [anomalies, selectedPropertyId]);
   const propertyNotifications = useMemo(() => notifications.filter(n => !n.propertyId || n.propertyId === selectedPropertyId), [notifications, selectedPropertyId]);
 
-  const pendingTasks = propertyMaintenance.filter(t => t.status === "Scheduled" || t.status === "In-Progress");
+  const pendingTasks = propertyMaintenance.filter(t => t.status === "Assigned" || t.status === "In-Progress");
   const overdueTasks = propertyMaintenance.filter(t => t.status === "Overdue");
   const criticalAssets = propertyAssets.filter(a => a.currentCondition === "Poor" || a.currentCondition === "Critical");
   const complianceIssues = propertyCompliance.filter(c => c.status === "Non-Compliant" || c.status === "Pending Review");
@@ -98,10 +99,10 @@ export default function FacilityDashboard({
               <div key={task.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800">
                 <div className="min-w-0">
                   <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate">{task.component}</span>
-                  <span className="text-[10px] text-slate-400 block">{task.contractor} - Due: {task.targetDate}</span>
+                  <span className="text-[10px] text-slate-400 block">{task.vendor} - Due: {task.targetDate}</span>
                 </div>
                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded shrink-0 ml-2 ${
-                  task.status === "Scheduled" ? "bg-sky-950 text-sky-400" : "bg-amber-950 text-amber-400"
+                  task.status === "Assigned" ? "bg-sky-950 text-sky-400" : "bg-amber-950 text-amber-400"
                 }`}>{task.status}</span>
               </div>
             )) : (

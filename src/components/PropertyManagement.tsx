@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Building2, Plus, Trash2, FileText, CloudUpload as UploadCloud, Check, Sparkles, MapPin, X, FileCheck2, RefreshCw } from "lucide-react";
+import { WorkflowStepper } from "./WorkflowComponents";
 import { Property } from "../types";
 import { countyList, countyCities } from "../data/regionalPricing";
 
@@ -75,6 +76,9 @@ export default function PropertyManagement({
     floors: number;
     buildingType: string;
     observations: string[];
+    confidence?: number;
+    source?: string;
+    isFallback?: boolean;
   } | null>(null);
 
   const [editArea, setEditArea] = useState<number>(0);
@@ -338,6 +342,22 @@ export default function PropertyManagement({
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Create, manage, and audit construction architectural plans and dynamic Total Cost of Ownership estimates.
           </p>
+          <div className="mt-3">
+            <WorkflowStepper
+              steps={[
+                { label: "Registration", status: "completed" },
+                { label: "Planning", status: "completed" },
+                { label: "Design", status: "completed" },
+                { label: "Cost Estimation", status: "active" },
+                { label: "Approval", status: "pending" },
+                { label: "Construction", status: "pending" },
+                { label: "Inspection", status: "pending" },
+                { label: "Operation", status: "pending" },
+                { label: "Maintenance", status: "pending" },
+                { label: "Reporting", status: "pending" },
+              ]}
+            />
+          </div>
         </div>
         
         <button
@@ -412,7 +432,7 @@ export default function PropertyManagement({
                   </h3>
                 </div>
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                  Area: {selectedProperty.estimatedFloorArea || 2500} sq. ft
+                  Area: {selectedProperty.estimatedFloorArea || 2500} sq. m
                 </span>
               </div>
 

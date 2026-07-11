@@ -254,6 +254,9 @@ export default function AIPredictions({
           Analytics-driven forecasts for maintenance costs, budget overruns, and utility
           consumption — paired with anomaly detection across building lifecycle operations.
         </p>
+        <p className="text-[10px] text-slate-400/70 italic mt-1">
+          Predictions are generated from historical data using statistical analysis, not machine learning. Confidence scores reflect data availability and trend strength.
+        </p>
       </div>
 
       {/* Summary Bar */}
@@ -446,6 +449,36 @@ export default function AIPredictions({
                       </p>
                     </div>
                   </div>
+                  {pred.assumptions && pred.assumptions.length > 0 && (
+                    <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-1.5">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                        Assumptions
+                      </span>
+                      <ul className="space-y-1">
+                        {pred.assumptions.map((a, i) => (
+                          <li key={i} className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-1.5">
+                            <span className="text-slate-300 dark:text-slate-600 mt-0.5">•</span>
+                            <span>{a}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {pred.limitations && pred.limitations.length > 0 && (
+                    <div className="space-y-1.5">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                        Limitations
+                      </span>
+                      <ul className="space-y-1">
+                        {pred.limitations.map((l, i) => (
+                          <li key={i} className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-1.5">
+                            <span className="text-slate-300 dark:text-slate-600 mt-0.5">•</span>
+                            <span>{l}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">

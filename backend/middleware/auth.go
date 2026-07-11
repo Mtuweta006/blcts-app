@@ -1,5 +1,7 @@
 package middleware
 
+import "os"
+
 import (
 	"context"
 	"net/http"
@@ -13,8 +15,15 @@ type contextKey string
 
 const (
 	UserContextKey contextKey = "user_claims"
-	JWTSecretKey              = "BLCTS_ENTERPRISE_SECURE_TOKEN_SECRET_KEY_2026_MAY_25"
 )
+
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "BLCTS_DEV_FALLBACK_SECRET_CHANGE_IN_PRODUCTION"
+	}
+	return []byte(secret)
+}
 
 // UserClaims models standard system identities for the three BLCTS roles:
 // administrator, facility_manager, building_owner
@@ -47,7 +56,7 @@ func EnsureJWT(next http.Handler) http.Handler {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, jwt.ErrSignatureInvalid
 			}
-			return []byte(JWTSecretKey), nil
+			return []byte(getJWTSecret()), nil
 		})
 
 		if err != nil || !token.Valid {
