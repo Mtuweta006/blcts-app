@@ -402,26 +402,33 @@ async function startServer() {
 
       const ai = new GoogleGenAI({ apiKey });
 
-      const planPrompt = `You are an expert Construction Planner and Senior Quantity Surveyor practicing in Nairobi, Kenya.
-Analyze the attached architectural plan document: "${fileName || 'architectural_drawing.pdf'}".
-Meticulously inspect the layout, drawing content, stamps, notations, and parameters.
-Estimate or extract the following structural and design parameters:
-1. Estimated floor area in Square Meters (SQM). Estimate a realistic figure based on the plans (usually between 100 and 15000 SQM).
-2. Estimated number of floors/levels (usually between 1 and 30).
-3. Primary building type (Residential, Commercial, Mixed-Use, Industrial).
-4. Actionable construction and materials lifecycle observations (minimum 3 professional observations) detailing structural efficiency, roofing types, or potential damp-proofing/waterproofing issues.
+      const planPrompt = `You are a Senior Quantity Surveyor and Architect licensed in Kenya, specializing in construction cost estimation.
 
-Return strictly as a JSON object matching the requested schema.`;
+Analyze the attached architectural drawing: "${fileName || 'architectural_drawing'}".
+
+Your job is to EXTRACT ONLY what you can actually see or measure from this drawing.
+DO NOT invent or fabricate measurements. If you cannot determine something, return null for that field.
+
+Extract the following where visible:
+1. estimatedFloorArea: Gross Floor Area in m² (per floor). Null if not determinable.
+2. floors: Number of floors/storeys. Null if not determinable.
+3. buildingType: "Residential", "Maisonette", "Apartment", "Commercial", "Office", "Mixed-Use", "Warehouse", "School", "Hospital", "Industrial", or "Unknown" if unclear.
+4. confidence: Your confidence 0.0–1.0 in the extracted measurements. Be honest. 0.5 = uncertain.
+5. observations: 3–6 honest observations. For any dimension you cannot determine, state exactly: "Unable to determine [field] from uploaded drawing."
+   Include: what you CAN see, what you CANNOT determine, and any quality concerns.
+6. roomCount: Approximate room count if floor plan is visible. Null if not visible.
+7. bedrooms: Bedroom count if visible. Null if not determinable.
+8. bathrooms: Bathroom count if visible. Null if not determinable.
+9. roofType: "Flat Roof", "Pitched Roof", "Trussed Roof", "Unknown" or null.
+10. drawingScale: Scale string (e.g. "1:100") if marked on drawing. Null if not found.
+
+HONESTY RULE: Never guess dimensions. Return null rather than a fabricated number.
+Return strictly as JSON matching the schema.`;
 
       const result = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: [
-          {
-            inlineData: {
-              data: image,
-              mimeType: mimeType
-            }
-          },
+          { inlineData: { data: image, mimeType: mimeType } },
           planPrompt
         ],
         config: {
@@ -429,16 +436,18 @@ Return strictly as a JSON object matching the requested schema.`;
           responseSchema: {
             type: 'OBJECT',
             properties: {
-              estimatedFloorArea: { type: 'INTEGER', description: 'Estimated floor area in SQM' },
-              floors: { type: 'INTEGER', description: 'Estimated number of floors/levels' },
-              buildingType: { type: 'STRING', description: 'Residential, Commercial, Mixed-Use, or Industrial' },
-              observations: {
-                type: 'ARRAY',
-                items: { type: 'STRING' },
-                description: '3-4 professional quantity surveying observations'
-              }
+              estimatedFloorArea: { type: 'INTEGER', description: 'GFA per floor in m², null if not determinable' },
+              floors:             { type: 'INTEGER', description: 'Number of floors, null if not determinable' },
+              buildingType:       { type: 'STRING',  description: 'Building classification' },
+              confidence:         { type: 'NUMBER',  description: 'Confidence 0.0–1.0' },
+              observations:       { type: 'ARRAY', items: { type: 'STRING' }, description: '3–6 honest observations' },
+              roomCount:          { type: 'INTEGER', description: 'Approximate rooms, null if unknown' },
+              bedrooms:           { type: 'INTEGER', description: 'Bedroom count, null if unknown' },
+              bathrooms:          { type: 'INTEGER', description: 'Bathroom count, null if unknown' },
+              roofType:           { type: 'STRING',  description: 'Roof type or null' },
+              drawingScale:       { type: 'STRING',  description: 'Scale e.g. 1:100, null if not found' },
             },
-            required: ['estimatedFloorArea', 'floors', 'buildingType', 'observations']
+            required: ['estimatedFloorArea', 'floors', 'buildingType', 'confidence', 'observations']
           }
         }
       });

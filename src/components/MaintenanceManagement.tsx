@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { MaintenanceTask, MaintenanceStatus, MaintenancePriority, MaintenanceCategory, Asset, UserRole } from "../types";
 import { WorkflowStepper, StatusBadge } from "./WorkflowComponents";
+import { upsertMaintenanceTask, deleteMaintenanceTask, fetchMaintenanceTasks } from "../lib/supabase";
 
 interface MaintenanceManagementProps {
   maintenanceRecords: MaintenanceTask[];
@@ -117,14 +118,43 @@ export default function MaintenanceManagement({
 
   const canEdit = currentUserRole !== "Building Owner";
 
+  // Load from Supabase first, fall back to localStorage
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: MaintenanceTask[] = JSON.parse(stored);
-        if (Array.isArray(parsed)) setLocalRecords(parsed);
+    fetchMaintenanceTasks().then(rows => {
+      if (rows.length > 0) {
+        const tasks: MaintenanceTask[] = rows.map(r => ({
+          id: r.id, propertyId: r.property_id, title: r.title,
+          description: r.description, component: r.component,
+          category: r.category as MaintenanceCategory,
+          priority: r.priority as MaintenancePriority,
+          status: r.status as MaintenanceStatus,
+          assignedTo: r.assigned_to, technician: r.technician, vendor: r.vendor,
+          estimatedCost: r.estimated_cost, actualCost: r.actual_cost,
+          targetDate: r.target_date, completedDate: r.completed_date ?? undefined,
+          verifiedBy: r.verified_by ?? undefined, phone: r.phone ?? undefined,
+          notes: r.notes, partsUsed: r.parts_used ?? undefined,
+          labourHours: r.labour_hours ?? undefined, downtime: r.downtime ?? undefined,
+          attachments: r.attachments || [], workOrderNumber: r.work_order_number ?? undefined,
+        }));
+        setLocalRecords(tasks);
+      } else {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) {
+            const parsed: MaintenanceTask[] = JSON.parse(stored);
+            if (Array.isArray(parsed)) setLocalRecords(parsed);
+          }
+        } catch {}
       }
-    } catch {}
+    }).catch(() => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed: MaintenanceTask[] = JSON.parse(stored);
+          if (Array.isArray(parsed)) setLocalRecords(parsed);
+        }
+      } catch {}
+    });
   }, []);
 
   useEffect(() => {
@@ -206,11 +236,26 @@ export default function MaintenanceManagement({
       if (existing) return prev.map((r) => (r.id === id ? updated : r));
       return [...prev, updated];
     });
+    // Sync to Supabase
+    upsertMaintenanceTask({
+      id: updated.id, property_id: updated.propertyId, title: updated.title,
+      description: updated.description, component: updated.component,
+      category: updated.category, priority: updated.priority, status: updated.status,
+      assigned_to: updated.assignedTo, technician: updated.technician, vendor: updated.vendor,
+      estimated_cost: updated.estimatedCost, actual_cost: updated.actualCost,
+      target_date: updated.targetDate, completed_date: updated.completedDate ?? null,
+      verified_by: updated.verifiedBy ?? null, phone: updated.phone ?? null,
+      notes: updated.notes, parts_used: updated.partsUsed ?? null,
+      labour_hours: updated.labourHours ?? null, downtime: updated.downtime ?? null,
+      attachments: updated.attachments, work_order_number: updated.workOrderNumber ?? null,
+      updated_at: new Date().toISOString(),
+    });
     triggerToast(`Task status updated to "${newStatus}".`, "success");
   };
 
   const handleDelete = (id: string) => {
     setLocalRecords((prev) => prev.filter((r) => r.id !== id));
+    deleteMaintenanceTask(id);
     triggerToast("Maintenance task deleted.", "info");
   };
 
@@ -304,7 +349,20 @@ export default function MaintenanceManagement({
         workOrderNumber: `WO-${Date.now().toString().slice(-6)}`,
       };
       setLocalRecords((prev) => [...prev, created]);
-      triggerToast("Maintenance task created successfully.", "success");
+      // Sync to Supabase
+      upsertMaintenanceTask({
+        id: created.id, property_id: created.propertyId, title: created.title,
+        description: created.description, component: created.component,
+        category: created.category, priority: created.priority, status: created.status,
+        assigned_to: created.assignedTo, technician: created.technician, vendor: created.vendor,
+        estimated_cost: created.estimatedCost, actual_cost: created.actualCost,
+        target_date: created.targetDate, completed_date: null, verified_by: null,
+        phone: null, notes: created.notes, parts_used: created.partsUsed ?? null,
+        labour_hours: created.labourHours ?? null, downtime: created.downtime ?? null,
+        attachments: [], work_order_number: created.workOrderNumber ?? null,
+        updated_at: new Date().toISOString(),
+      });
+      triggerToast("Maintenance task created and saved to database.", "success");
     }
 
     setIsAddModalOpen(false);
