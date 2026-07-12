@@ -36,7 +36,7 @@ import VendorCenter from "./components/VendorCenter";
 import AddCostModal from "./components/AddCostModal";
 import AuthScreen from "./components/AuthScreen";
 import LandingPage from "./components/LandingPage";
-import PropertyManagement from "./components/PropertyManagement";
+import PropertyManagement, { BlueprintAnalysisResult } from "./components/PropertyManagement";
 import CostEstimation from "./components/CostEstimation";
 import Reports from "./components/Report";
 import AssetManagement from "./components/AssetManagement";
@@ -154,6 +154,8 @@ export default function App() {
   
   // UI states
   const [activeTab, setActiveTab] = useState<ActiveTabType>("dashboard");
+  // Blueprint analysis result — set by PropertyManagement when AI confirms, read by CostEstimation
+  const [blueprintAnalysisByProperty, setBlueprintAnalysisByProperty] = useState<Record<string, BlueprintAnalysisResult>>({});
 
   // Auto-redirect to role-appropriate dashboard on login
   React.useEffect(() => {
@@ -815,12 +817,18 @@ export default function App() {
                 setMaintenanceTasks={setMaintenanceTasks}
                 currentLanguage={currentLanguage}
                 triggerToast={triggerToast}
+                onBlueprintAnalysis={(propertyId, result) => {
+                  setBlueprintAnalysisByProperty(prev => ({ ...prev, [propertyId]: result }));
+                  // Auto-navigate to cost estimation
+                  setActiveTab("cost-estimation");
+                }}
               />
             )}
 
             {activeTab === "cost-estimation" && isTabAllowed("cost-estimation") && (
               <CostEstimation
                 selectedProperty={selectedProperty}
+                blueprintAnalysis={blueprintAnalysisByProperty[selectedProperty?.id || ""] ?? null}
                 triggerToast={triggerToast}
               />
             )}

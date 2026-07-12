@@ -17,9 +17,11 @@ import {
   saveBOQEstimate, BOQEstimateRow, RegionalPricingRow
 } from "../lib/supabase";
 import { WorkflowStepper } from "./WorkflowComponents";
+import type { BlueprintAnalysisResult } from "./PropertyManagement";
 
 interface CostEstimationProps {
   selectedProperty: Property;
+  blueprintAnalysis?: BlueprintAnalysisResult | null;
   triggerToast?: (msg: string, type?: "success" | "info" | "warning") => void;
 }
 
@@ -78,7 +80,7 @@ function fmtK(v: number) {
   return `KSh ${v.toFixed(0)}`;
 }
 
-export default function CostEstimation({ selectedProperty, triggerToast }: CostEstimationProps) {
+export default function CostEstimation({ selectedProperty, blueprintAnalysis: blueprintAnalysisProp, triggerToast }: CostEstimationProps) {
   const [config, setConfig] = useState<CostEstimateConfig>(() => getCostConfigFromStorage());
   const [county, setCounty]           = useState(selectedProperty?.county || "Nairobi");
   const [manualArea, setManualArea]   = useState(selectedProperty?.estimatedFloorArea || 300);
@@ -98,7 +100,9 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
   const [activeTab, setActiveTab]     = useState<"summary" | "boq" | "lifecycle" | "report">("summary");
 
   // Blueprint analysis data passed from PropertyManagement (via property fields)
-  const blueprintAnalysis = selectedProperty?.observations?.length
+  // blueprintAnalysis comes from App.tsx state (set by PropertyManagement after AI confirmation)
+  // Falls back to reading observations from the property object for backward compatibility
+  const blueprintAnalysis = blueprintAnalysisProp ?? (selectedProperty?.observations?.length
     ? {
         observations: selectedProperty.observations,
         estimatedFloorArea: selectedProperty.estimatedFloorArea,
@@ -107,7 +111,7 @@ export default function CostEstimation({ selectedProperty, triggerToast }: CostE
         confidence: null as number | null,
         isFallback: false,
       }
-    : null;
+    : null);
 
   // Load regional pricing from Supabase on mount
   useEffect(() => {

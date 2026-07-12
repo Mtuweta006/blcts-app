@@ -65,6 +65,38 @@ export default function FacilityDashboard({
         </div>
       </div>
 
+      {/* Maintenance Workflow — always visible */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Maintenance Workflow</h3>
+          <button
+            onClick={() => setActiveTab("maintenance")}
+            className="text-[9px] font-bold text-sky-500 hover:text-sky-400 uppercase tracking-wider cursor-pointer"
+          >
+            Manage Tasks →
+          </button>
+        </div>
+        <WorkflowStepper
+          steps={[
+            { label: "Maintenance Need",    status: "completed" },
+            { label: "Create Task",         status: propertyMaintenance.length > 0 ? "completed" : "active" },
+            { label: "Pending",             status: propertyMaintenance.some(t => t.status === "Pending") ? "active" : propertyMaintenance.length > 0 ? "completed" : "pending" },
+            { label: "Assigned",            status: propertyMaintenance.some(t => t.status === "Assigned") ? "active" : propertyMaintenance.some(t => ["In-Progress","Completed","Verified"].includes(t.status)) ? "completed" : "pending" },
+            { label: "In Progress",         status: propertyMaintenance.some(t => t.status === "In-Progress") ? "active" : propertyMaintenance.some(t => ["Completed","Verified"].includes(t.status)) ? "completed" : "pending" },
+            { label: "Completed",           status: propertyMaintenance.some(t => t.status === "Completed") ? "active" : propertyMaintenance.some(t => t.status === "Verified") ? "completed" : "pending" },
+            { label: "Verified",            status: propertyMaintenance.some(t => t.status === "Verified") ? "completed" : "pending" },
+            { label: "Cost Recorded",       status: propertyMaintenance.some(t => t.actualCost > 0) ? "completed" : "pending" },
+            { label: "Lifecycle Updated",   status: propertyMaintenance.some(t => t.actualCost > 0) ? "completed" : "pending" },
+          ]}
+        />
+        <div className="mt-2 flex items-center gap-4 text-[9px] text-slate-400">
+          <span className="font-bold">{propertyMaintenance.length} total tasks</span>
+          <span>{pendingTasks.length} active</span>
+          <span>{overdueTasks.length} overdue</span>
+          <span>{propertyMaintenance.filter(t => t.status === "Verified").length} verified</span>
+        </div>
+      </div>
+
       {/* Building KPIs */}
       <motion.div
         variants={staggerContainer}

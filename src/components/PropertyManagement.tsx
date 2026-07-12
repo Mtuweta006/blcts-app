@@ -4,6 +4,20 @@ import { WorkflowStepper } from "./WorkflowComponents";
 import { Property } from "../types";
 import { countyList, countyCities } from "../data/regionalPricing";
 
+export interface BlueprintAnalysisResult {
+  estimatedFloorArea: number;
+  floors: number;
+  buildingType: string;
+  observations: string[];
+  confidence: number | null;
+  isFallback: boolean;
+  roomCount?: number | null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  roofType?: string | null;
+  drawingScale?: string | null;
+}
+
 interface PropertyManagementProps {
   properties: Property[];
   setProperties: React.Dispatch<React.SetStateAction<Property[]>>;
@@ -15,6 +29,7 @@ interface PropertyManagementProps {
   setMaintenanceTasks: any;
   currentLanguage: "en" | "sw";
   triggerToast: (msg: string, type?: "success" | "info" | "warning") => void;
+  onBlueprintAnalysis?: (propertyId: string, result: BlueprintAnalysisResult) => void;
 }
 
 export default function PropertyManagement({
@@ -22,7 +37,8 @@ export default function PropertyManagement({
   setProperties,
   selectedPropertyId,
   setSelectedPropertyId,
-  triggerToast
+  triggerToast,
+  onBlueprintAnalysis,
 }: PropertyManagementProps) {
 
   // Modal State
@@ -321,6 +337,23 @@ export default function PropertyManagement({
       observations: analyzedResult?.observations || [],
       healthStatusText: "Plan Analyzed" 
     } : p));
+
+    // Fire the callback so CostEstimation receives full AI result including confidence
+    if (onBlueprintAnalysis && analyzedResult) {
+      onBlueprintAnalysis(selectedProperty.id, {
+        estimatedFloorArea: area,
+        floors: floorsNum,
+        buildingType: editType,
+        observations: analyzedResult.observations || [],
+        confidence: (analyzedResult as any).confidence ?? null,
+        isFallback: analyzedResult.isFallback ?? false,
+        roomCount: (analyzedResult as any).roomCount ?? null,
+        bedrooms: (analyzedResult as any).bedrooms ?? null,
+        bathrooms: (analyzedResult as any).bathrooms ?? null,
+        roofType: (analyzedResult as any).roofType ?? null,
+        drawingScale: (analyzedResult as any).drawingScale ?? null,
+      });
+    }
 
     setAnalyzedResult(null);
     triggerToast("Project specs synchronized. Visit the Cost Estimation tab to generate a detailed estimate.", "success");
